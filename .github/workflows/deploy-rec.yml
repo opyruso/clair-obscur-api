@@ -25,7 +25,7 @@ jobs:
           fi
 
           echo "🧹 Nettoyage du dossier de test..."
-          rm -rf /opt/clairobscur/coh-api-rec/*
+          rm -rf /opt/clairobscur/coh-api-rec/coh-api-runner.jar
 
           echo "📁 Copie des fichiers dans pictos-rec..."
           cp -r target/clairobscurhelper-api-1.0.0-SNAPSHOT-runner.jar /opt/clairobscur/coh-api-rec/coh-api-runner.jar

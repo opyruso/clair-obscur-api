@@ -2,6 +2,7 @@ package com.opyruso.coh.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 @Entity
@@ -37,6 +38,7 @@ public class WeaponDetails extends PanacheEntityBase {
 
     @ManyToOne
     @JoinColumn(name = "id_weapon", insertable = false, updatable = false)
+    @JsonIgnore
     public Weapon weapon;
 
     public static class PK implements Serializable {

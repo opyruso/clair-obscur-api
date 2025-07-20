@@ -2,6 +2,7 @@ package com.opyruso.coh.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 @Entity
@@ -25,6 +26,7 @@ public class CharacterDetails extends PanacheEntityBase {
 
     @ManyToOne
     @JoinColumn(name = "id_character", insertable = false, updatable = false)
+    @JsonIgnore
     public Character character;
 
     public static class PK implements Serializable {

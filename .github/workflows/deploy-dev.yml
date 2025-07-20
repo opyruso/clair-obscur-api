@@ -32,6 +32,6 @@ jobs:
           sudo chown coh-api-dev: /opt/clairobscur/coh-api-dev/coh-api-runner.jar
 
           echo "📁 redemarrage du service..."
-          sudo systemctl restart quarkus_coh-api-dev.service
+          sudo systemctl restart quarkus-coh-api-dev.service
 
           echo "✅ Déploiement DEV terminé !"

@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.npcirl</groupId>
+  <artifactId>npc-irl-companion</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <quarkus.platform.version>3.10.0</quarkus.platform.version>
+    <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <java.version>21</java.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${quarkus.platform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Quarkus Core -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-config-yaml</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-scheduler</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-logging-json</artifactId>
+    </dependency>
+
+    <!-- GPT + Web Client -->
+	<dependency>
+	  <groupId>io.quarkus</groupId>
+	  <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
+	</dependency>
+	
+	<dependency>
+	  <groupId>io.quarkus</groupId>
+	  <artifactId>quarkus-rest-client-reactive</artifactId> <!-- ✅ version non nécessaire, prise dans le BOM -->
+	</dependency>
+	
+	<dependency>
+	    <groupId>io.quarkus</groupId>
+	    <artifactId>quarkus-vertx</artifactId>
+	</dependency>
+
+    <!-- GPT -->
+    <dependency>
+	  <groupId>com.theokanning.openai-gpt3-java</groupId>
+	  <artifactId>client</artifactId>
+	  <version>0.18.2</version>
+	</dependency>
+
+    <!-- Discord -->
+    <dependency>
+      <groupId>com.discord4j</groupId>
+      <artifactId>discord4j-core</artifactId>
+      <version>3.2.5</version>
+    </dependency>
+
+    <!-- JSON -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <!-- DB -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-mariadb</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${quarkus-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+              <goal>generate-code</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

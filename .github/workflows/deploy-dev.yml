@@ -1,0 +1,39 @@
+name: Déploiement Dev
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  deploy-dev:
+    runs-on: self-hosted
+
+    steps:
+      - name: 🔄 Récupération du code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Déploiement sur coh-api-dev
+        run: |
+          echo "📦 Installation des dépendances..."
+          npm install
+
+          echo "🏗️  Build du site..."
+          npm run build
+
+          echo "🔍 Vérification du dossier target/"
+          if [ ! -d "target" ]; then
+            echo "❌ Le dossier 'target/' n'a pas été généré. Abandon."
+            exit 1
+          fi
+
+          echo "🧹 Nettoyage du dossier de test..."
+          rm -rf /opt/clairobscur/coh-api-dev/*
+
+          echo "📁 Copie des fichiers dans pictos-dev..."
+          cp -r target/clairobscurhelper-api-1.0.0-SNAPSHOT.jar /opt/clairobscur/coh-api-dev/coh-api-runner.jar
+
+		  echo "📁 redemarrage du service..."
+		  systemctl restart DEV_coh-api-dev.service
+
+          echo "✅ Déploiement DEV terminé !"

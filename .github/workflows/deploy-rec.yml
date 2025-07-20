@@ -1,0 +1,39 @@
+name: Déploiement Recette
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-rec:
+    runs-on: self-hosted
+
+    steps:
+      - name: 🧬 Récupération du code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Déploiement sur coh-api-rec
+        run: |
+          echo "📦 Installation des dépendances..."
+          npm install
+
+          echo "🏗️  Build du site..."
+          npm run build
+
+          echo "🔍 Vérification du dossier target/"
+          if [ ! -d "target" ]; then
+            echo "❌ Le dossier 'target/' n'a pas été généré. Abandon."
+            exit 1
+          fi
+
+          echo "🧹 Nettoyage du dossier de test..."
+          rm -rf /opt/clairobscur/coh-api-rec/*
+
+          echo "📁 Copie des fichiers dans pictos-rec..."
+          cp -r target/clairobscurhelper-api-1.0.0-SNAPSHOT.jar /opt/clairobscur/coh-api-rec/coh-api-runner.jar
+
+		  echo "📁 redemarrage du service..."
+		  systemctl restart quarkus-coh-api-rec.service
+
+          echo "✅ Déploiement REC terminé !"

@@ -13,7 +13,7 @@ public class CohBuild extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_build")
-    public String idBuild;
+    public Long idBuild;
 
     @Lob
     @Column(name = "content")

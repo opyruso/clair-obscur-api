@@ -16,10 +16,7 @@ jobs:
       - name: 🚀 Déploiement sur coh-api-pro
         run: |
           echo "📦 Installation des dépendances..."
-          npm install
-
-          echo "🏗️  Build du site..."
-          npm run build
+          mvn clean package
 
           echo "🔍 Vérification du dossier target/"
           if [ ! -d "target" ]; then

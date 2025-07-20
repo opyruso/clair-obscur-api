@@ -15,6 +15,10 @@ jobs:
 
       - name: 🚀 Déploiement sur coh-api-rec
         run: |
+          id
+          whoami
+          echo $HOME
+
           echo "📦 Installation des dépendances..."
           mvn clean package
 

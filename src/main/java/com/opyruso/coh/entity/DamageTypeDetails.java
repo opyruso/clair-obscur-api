@@ -2,6 +2,7 @@ package com.opyruso.coh.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 @Entity
@@ -22,6 +23,7 @@ public class DamageTypeDetails extends PanacheEntityBase {
 
     @ManyToOne
     @JoinColumn(name = "id_damage_type", insertable = false, updatable = false)
+    @JsonIgnore
     public DamageType damageType;
 
     public static class PK implements Serializable {

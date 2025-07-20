@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.npcirl</groupId>
-  <artifactId>npc-irl-companion</artifactId>
+  <groupId>com.opyruso.coh</groupId>
+  <artifactId>clairobscurhelper-api</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <properties>
@@ -95,6 +95,20 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-mariadb</artifactId>
+    </dependency>
+
+    <!-- OpenAPI and Keycloak -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
     </dependency>
   </dependencies>
 

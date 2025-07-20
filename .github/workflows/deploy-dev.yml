@@ -33,7 +33,7 @@ jobs:
           echo "📁 Copie des fichiers dans pictos-dev..."
           cp -r target/clairobscurhelper-api-1.0.0-SNAPSHOT.jar /opt/clairobscur/coh-api-dev/coh-api-runner.jar
 
-		  echo "📁 redemarrage du service..."
-		  systemctl restart DEV_coh-api-dev.service
+          echo "📁 redemarrage du service..."
+          systemctl restart DEV_coh-api-dev.service
 
           echo "✅ Déploiement DEV terminé !"

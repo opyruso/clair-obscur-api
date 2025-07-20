@@ -33,7 +33,7 @@ jobs:
 
           echo "📁 Copie des fichiers dans pictos-rec..."
           cp -r target/clairobscurhelper-api-1.0.0-SNAPSHOT-runner.jar /opt/clairobscur/coh-api-rec/coh-api-runner.jar
-          chown coh-api-rec: /opt/clairobscur/coh-api-rec/coh-api-runner.jar
+..........sudo chown coh-api-rec: /opt/clairobscur/coh-api-rec/coh-api-runner.jar
 
           echo "📁 redemarrage du service..."
           sudo systemctl restart quarkus_coh-api-rec.service

@@ -26,10 +26,10 @@ public class AdminWeaponResource {
     }
 
     @PUT
-    @Path("{id}")
     @RolesAllowed("coh-app:admin")
     @Transactional
-    public Response update(@PathParam("id") String id, Weapon weapon) {
+    public Response update(Weapon weapon) {
+        String id = weapon.idWeapon;
         Weapon entity = repository.findById(id);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

@@ -1,7 +1,7 @@
 package com.opyruso.coh.resource;
 
-import com.opyruso.coh.entity.Picto;
-import com.opyruso.coh.repository.PictoRepository;
+import com.opyruso.coh.entity.Character;
+import com.opyruso.coh.repository.CharacterRepository;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -9,41 +9,34 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/admin/pictos")
+@Path("/admin/characters")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class AdminPictoResource {
+public class AdminCharacterResource {
 
     @Inject
-    PictoRepository repository;
+    CharacterRepository repository;
 
     @POST
     @RolesAllowed("coh-app:admin")
     @Transactional
-    public Response create(Picto picto) {
-        repository.persist(picto);
-        return Response.status(Response.Status.CREATED).entity(picto).build();
+    public Response create(Character character) {
+        repository.persist(character);
+        return Response.status(Response.Status.CREATED).entity(character).build();
     }
 
     @PUT
     @RolesAllowed("coh-app:admin")
     @Transactional
-    public Response update(Picto picto) {
-        String id = picto.idPicto;
-        Picto entity = repository.findById(id);
+    public Response update(Character character) {
+        Character entity = repository.findById(character.idCharacter);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.level = picto.level;
-        entity.bonusDefense = picto.bonusDefense;
-        entity.bonusSpeed = picto.bonusSpeed;
-        entity.bonusCritChance = picto.bonusCritChance;
-        entity.bonusHealth = picto.bonusHealth;
-        entity.luminaCost = picto.luminaCost;
         entity.details.clear();
-        if (picto.details != null) {
-            picto.details.forEach(d -> d.idPicto = id);
-            entity.details.addAll(picto.details);
+        if (character.details != null) {
+            character.details.forEach(d -> d.idCharacter = character.idCharacter);
+            entity.details.addAll(character.details);
         }
         return Response.ok(entity).build();
     }

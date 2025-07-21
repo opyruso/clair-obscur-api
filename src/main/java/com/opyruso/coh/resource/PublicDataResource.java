@@ -26,11 +26,21 @@ public class PublicDataResource {
     @Transactional
     public Response getAll(@PathParam("lang") String lang) {
         PublicData data = new PublicData();
-        data.characters = Character.find("select distinct c from Character c join fetch c.details d where d.lang = ?1", lang).list();
-        data.damageTypes = DamageType.find("select distinct d from DamageType d join fetch d.details dd where dd.lang = ?1", lang).list();
-        data.damageBuffTypes = DamageBuffType.find("select distinct d from DamageBuffType d join fetch d.details dd where dd.lang = ?1", lang).list();
-        data.pictos = Picto.find("select distinct p from Picto p join fetch p.details d where d.lang = ?1", lang).list();
-        data.weapons = Weapon.find("select distinct w from Weapon w join fetch w.details d where d.lang = ?1", lang).list();
+        data.characters = Character
+                .find("select distinct c from Character c left join fetch c.details d on d.lang = ?1", lang)
+                .list();
+        data.damageTypes = DamageType
+                .find("select distinct d from DamageType d left join fetch d.details dd on dd.lang = ?1", lang)
+                .list();
+        data.damageBuffTypes = DamageBuffType
+                .find("select distinct d from DamageBuffType d left join fetch d.details dd on dd.lang = ?1", lang)
+                .list();
+        data.pictos = Picto
+                .find("select distinct p from Picto p left join fetch p.details d on d.lang = ?1", lang)
+                .list();
+        data.weapons = Weapon
+                .find("select distinct w from Weapon w left join fetch w.details d on d.lang = ?1", lang)
+                .list();
 
         ObjectMapper mapper = new ObjectMapper();
         try {

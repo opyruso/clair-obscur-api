@@ -1,7 +1,7 @@
 package com.opyruso.coh.resource;
 
-import com.opyruso.coh.entity.Picto;
-import com.opyruso.coh.repository.PictoRepository;
+import com.opyruso.coh.entity.DamageBuffType;
+import com.opyruso.coh.repository.DamageBuffTypeRepository;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -9,41 +9,34 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/admin/pictos")
+@Path("/admin/damageBuffTypes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class AdminPictoResource {
+public class AdminDamageBuffTypeResource {
 
     @Inject
-    PictoRepository repository;
+    DamageBuffTypeRepository repository;
 
     @POST
     @RolesAllowed("coh-app:admin")
     @Transactional
-    public Response create(Picto picto) {
-        repository.persist(picto);
-        return Response.status(Response.Status.CREATED).entity(picto).build();
+    public Response create(DamageBuffType damageBuffType) {
+        repository.persist(damageBuffType);
+        return Response.status(Response.Status.CREATED).entity(damageBuffType).build();
     }
 
     @PUT
     @RolesAllowed("coh-app:admin")
     @Transactional
-    public Response update(Picto picto) {
-        String id = picto.idPicto;
-        Picto entity = repository.findById(id);
+    public Response update(DamageBuffType damageBuffType) {
+        DamageBuffType entity = repository.findById(damageBuffType.idDamageBuffType);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.level = picto.level;
-        entity.bonusDefense = picto.bonusDefense;
-        entity.bonusSpeed = picto.bonusSpeed;
-        entity.bonusCritChance = picto.bonusCritChance;
-        entity.bonusHealth = picto.bonusHealth;
-        entity.luminaCost = picto.luminaCost;
         entity.details.clear();
-        if (picto.details != null) {
-            picto.details.forEach(d -> d.idPicto = id);
-            entity.details.addAll(picto.details);
+        if (damageBuffType.details != null) {
+            damageBuffType.details.forEach(d -> d.idDamageBuffType = damageBuffType.idDamageBuffType);
+            entity.details.addAll(damageBuffType.details);
         }
         return Response.ok(entity).build();
     }
@@ -52,7 +45,7 @@ public class AdminPictoResource {
     @Path("{id}")
     @RolesAllowed("coh-app:admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
+    public Response delete(@PathParam("id") Integer id) {
         boolean deleted = repository.deleteById(id);
         if (!deleted) {
             return Response.status(Response.Status.NOT_FOUND).build();

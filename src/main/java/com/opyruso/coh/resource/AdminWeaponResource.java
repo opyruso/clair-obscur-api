@@ -18,7 +18,7 @@ public class AdminWeaponResource {
     WeaponRepository repository;
 
     @POST
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response create(Weapon weapon) {
         repository.persist(weapon);
@@ -26,7 +26,7 @@ public class AdminWeaponResource {
     }
 
     @PUT
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response update(Weapon weapon) {
         String id = weapon.idWeapon;
@@ -48,7 +48,7 @@ public class AdminWeaponResource {
 
     @DELETE
     @Path("{id}")
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response delete(@PathParam("id") String id) {
         boolean deleted = repository.deleteById(id);

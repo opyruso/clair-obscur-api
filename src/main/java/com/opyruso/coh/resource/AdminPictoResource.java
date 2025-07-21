@@ -18,7 +18,7 @@ public class AdminPictoResource {
     PictoRepository repository;
 
     @POST
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response create(Picto picto) {
         repository.persist(picto);
@@ -26,7 +26,7 @@ public class AdminPictoResource {
     }
 
     @PUT
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response update(Picto picto) {
         String id = picto.idPicto;
@@ -50,7 +50,7 @@ public class AdminPictoResource {
 
     @DELETE
     @Path("{id}")
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response delete(@PathParam("id") String id) {
         boolean deleted = repository.deleteById(id);

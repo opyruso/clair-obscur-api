@@ -9,7 +9,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/admin/damageBuffTypes")
+@Path("/admin/damagebufftypes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AdminDamageBuffTypeResource {
@@ -18,7 +18,7 @@ public class AdminDamageBuffTypeResource {
     DamageBuffTypeRepository repository;
 
     @POST
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response create(DamageBuffType damageBuffType) {
         repository.persist(damageBuffType);
@@ -26,7 +26,7 @@ public class AdminDamageBuffTypeResource {
     }
 
     @PUT
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response update(DamageBuffType damageBuffType) {
         DamageBuffType entity = repository.findById(damageBuffType.idDamageBuffType);
@@ -43,7 +43,7 @@ public class AdminDamageBuffTypeResource {
 
     @DELETE
     @Path("{id}")
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response delete(@PathParam("id") Integer id) {
         boolean deleted = repository.deleteById(id);

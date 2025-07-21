@@ -18,7 +18,7 @@ public class AdminCharacterResource {
     CharacterRepository repository;
 
     @POST
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response create(Character character) {
         repository.persist(character);
@@ -26,7 +26,7 @@ public class AdminCharacterResource {
     }
 
     @PUT
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response update(Character character) {
         Character entity = repository.findById(character.idCharacter);
@@ -43,7 +43,7 @@ public class AdminCharacterResource {
 
     @DELETE
     @Path("{id}")
-    @RolesAllowed("coh-app:admin")
+    @RolesAllowed("admin")
     @Transactional
     public Response delete(@PathParam("id") String id) {
         boolean deleted = repository.deleteById(id);

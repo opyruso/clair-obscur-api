@@ -26,11 +26,80 @@ public class PublicDataResource {
     @Transactional
     public Response getAll(@PathParam("lang") String lang) {
         PublicData data = new PublicData();
-        data.characters = Character.find("select distinct c from Character c join fetch c.details d where d.lang = ?1", lang).list();
-        data.damageTypes = DamageType.find("select distinct d from DamageType d join fetch d.details dd where dd.lang = ?1", lang).list();
-        data.damageBuffTypes = DamageBuffType.find("select distinct d from DamageBuffType d join fetch d.details dd where dd.lang = ?1", lang).list();
-        data.pictos = Picto.find("select distinct p from Picto p join fetch p.details d where d.lang = ?1", lang).list();
-        data.weapons = Weapon.find("select distinct w from Weapon w join fetch w.details d where d.lang = ?1", lang).list();
+        data.characters = Character
+                .find("select distinct c from Character c left join fetch c.details d on d.lang = ?1", lang)
+                .list();
+        data.damageTypes = DamageType
+                .find("select distinct d from DamageType d left join fetch d.details dd on dd.lang = ?1", lang)
+                .list();
+        data.damageBuffTypes = DamageBuffType
+                .find("select distinct d from DamageBuffType d left join fetch d.details dd on dd.lang = ?1", lang)
+                .list();
+        data.pictos = Picto
+                .find("select distinct p from Picto p left join fetch p.details d on d.lang = ?1", lang)
+                .list();
+        data.weapons = Weapon
+                .find("select distinct w from Weapon w left join fetch w.details d on d.lang = ?1", lang)
+                .list();
+
+        data.characters.forEach(c -> {
+            if (c.details == null || c.details.isEmpty()) {
+                var d = new com.opyruso.coh.entity.CharacterDetails();
+                d.idCharacter = c.idCharacter;
+                d.lang = lang;
+                d.name = "";
+                d.story = "";
+                c.details = java.util.List.of(d);
+            }
+        });
+
+        data.damageTypes.forEach(dt -> {
+            if (dt.details == null || dt.details.isEmpty()) {
+                var dd = new com.opyruso.coh.entity.DamageTypeDetails();
+                dd.idDamageType = dt.idDamageType;
+                dd.lang = lang;
+                dd.name = "";
+                dt.details = java.util.List.of(dd);
+            }
+        });
+
+        data.damageBuffTypes.forEach(db -> {
+            if (db.details == null || db.details.isEmpty()) {
+                var dd = new com.opyruso.coh.entity.DamageBuffTypeDetails();
+                dd.idDamageBuffType = db.idDamageBuffType;
+                dd.lang = lang;
+                dd.name = "";
+                db.details = java.util.List.of(dd);
+            }
+        });
+
+        data.pictos.forEach(p -> {
+            if (p.details == null || p.details.isEmpty()) {
+                var pd = new com.opyruso.coh.entity.PictoDetails();
+                pd.idPicto = p.idPicto;
+                pd.lang = lang;
+                pd.name = "";
+                pd.region = "";
+                pd.descrptionBonusLumina = "";
+                pd.unlockDescription = "";
+                p.details = java.util.List.of(pd);
+            }
+        });
+
+        data.weapons.forEach(w -> {
+            if (w.details == null || w.details.isEmpty()) {
+                var wd = new com.opyruso.coh.entity.WeaponDetails();
+                wd.idWeapon = w.idWeapon;
+                wd.lang = lang;
+                wd.name = "";
+                wd.region = "";
+                wd.unlockDescription = "";
+                wd.weaponEffect1 = "";
+                wd.weaponEffect2 = "";
+                wd.weaponEffect3 = "";
+                w.details = java.util.List.of(wd);
+            }
+        });
 
         ObjectMapper mapper = new ObjectMapper();
         try {

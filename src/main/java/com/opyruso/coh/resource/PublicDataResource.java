@@ -29,36 +29,31 @@ public class PublicDataResource {
         data.characters = Character
                 .find(
                         "select distinct c from Character c " +
-                                "left outer join fetch c.details d " +
-                                "where d.lang = ?1 or d.lang is null",
+                                "left join fetch c.details d on d.lang = ?1",
                         lang)
                 .list();
         data.damageTypes = DamageType
                 .find(
                         "select distinct d from DamageType d " +
-                                "left outer join fetch d.details dd " +
-                                "where dd.lang = ?1 or dd.lang is null",
+                                "left join fetch d.details dd on dd.lang = ?1",
                         lang)
                 .list();
         data.damageBuffTypes = DamageBuffType
                 .find(
                         "select distinct d from DamageBuffType d " +
-                                "left outer join fetch d.details dd " +
-                                "where dd.lang = ?1 or dd.lang is null",
+                                "left join fetch d.details dd on dd.lang = ?1",
                         lang)
                 .list();
         data.pictos = Picto
                 .find(
                         "select distinct p from Picto p " +
-                                "left outer join fetch p.details d " +
-                                "where d.lang = ?1 or d.lang is null",
+                                "left join fetch p.details d on d.lang = ?1",
                         lang)
                 .list();
         data.weapons = Weapon
                 .find(
                         "select distinct w from Weapon w " +
-                                "left outer join fetch w.details d " +
-                                "where d.lang = ?1 or d.lang is null",
+                                "left join fetch w.details d on d.lang = ?1",
                         lang)
                 .list();
 

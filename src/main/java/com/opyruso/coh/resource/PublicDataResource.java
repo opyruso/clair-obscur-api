@@ -8,6 +8,8 @@ import com.opyruso.coh.entity.Weapon;
 import com.opyruso.coh.model.PublicData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -20,6 +22,9 @@ import jakarta.ws.rs.core.Response;
 @Path("/public/data")
 @Produces(MediaType.APPLICATION_JSON)
 public class PublicDataResource {
+
+    @Inject
+    EntityManager em;
 
     @GET
     @Path("{lang}")
@@ -51,6 +56,8 @@ public class PublicDataResource {
                         "select distinct w from Weapon w " +
                                 "left join fetch w.details d")
                 .list();
+
+        em.clear();
 
         data.characters.forEach(c -> {
             if (c.details != null) {

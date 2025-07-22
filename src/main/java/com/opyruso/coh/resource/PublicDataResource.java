@@ -8,6 +8,8 @@ import com.opyruso.coh.entity.Weapon;
 import com.opyruso.coh.model.PublicData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -21,6 +23,9 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class PublicDataResource {
 
+    @Inject
+    EntityManager em;
+
     @GET
     @Path("{lang}")
     @Transactional
@@ -29,38 +34,30 @@ public class PublicDataResource {
         data.characters = Character
                 .find(
                         "select distinct c from Character c " +
-                                "left outer join fetch c.details d " +
-                                "where d.lang = ?1 or d.lang is null",
-                        lang)
+                                "left join fetch c.details d")
                 .list();
         data.damageTypes = DamageType
                 .find(
                         "select distinct d from DamageType d " +
-                                "left outer join fetch d.details dd " +
-                                "where dd.lang = ?1 or dd.lang is null",
-                        lang)
+                                "left join fetch d.details dd")
                 .list();
         data.damageBuffTypes = DamageBuffType
                 .find(
                         "select distinct d from DamageBuffType d " +
-                                "left outer join fetch d.details dd " +
-                                "where dd.lang = ?1 or dd.lang is null",
-                        lang)
+                                "left join fetch d.details dd")
                 .list();
         data.pictos = Picto
                 .find(
                         "select distinct p from Picto p " +
-                                "left outer join fetch p.details d " +
-                                "where d.lang = ?1 or d.lang is null",
-                        lang)
+                                "left join fetch p.details d")
                 .list();
         data.weapons = Weapon
                 .find(
                         "select distinct w from Weapon w " +
-                                "left outer join fetch w.details d " +
-                                "where d.lang = ?1 or d.lang is null",
-                        lang)
+                                "left join fetch w.details d")
                 .list();
+
+        em.clear();
 
         data.characters.forEach(c -> {
             if (c.details != null) {

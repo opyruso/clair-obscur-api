@@ -1,7 +1,9 @@
 package com.opyruso.coh.resource;
 
 import com.opyruso.coh.entity.DamageType;
+import com.opyruso.coh.entity.DamageTypeDetails;
 import com.opyruso.coh.repository.DamageTypeRepository;
+import com.opyruso.coh.model.dto.DamageTypeWithDetails;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -20,24 +22,48 @@ public class AdminDamageTypeResource {
     @POST
     @RolesAllowed("admin")
     @Transactional
-    public Response create(DamageType damageType) {
+    public Response create(DamageTypeWithDetails payload) {
+        DamageType damageType = new DamageType();
+        damageType.idDamageType = payload.idDamageType;
+
+        DamageTypeDetails details = new DamageTypeDetails();
+        details.idDamageType = payload.idDamageType;
+        details.lang = payload.lang;
+        details.name = payload.name;
+        details.damageType = damageType;
+
+        damageType.details = new java.util.ArrayList<>(java.util.List.of(details));
+
         repository.persist(damageType);
         return Response.status(Response.Status.CREATED).entity(damageType).build();
     }
 
     @PUT
+    @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response update(DamageType damageType) {
-        DamageType entity = repository.findById(damageType.idDamageType);
+    public Response update(@PathParam("id") Integer id, DamageTypeWithDetails payload) {
+        DamageType entity = repository.findById(id);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.details.clear();
-        if (damageType.details != null) {
-            damageType.details.forEach(d -> d.idDamageType = damageType.idDamageType);
-            entity.details.addAll(damageType.details);
+        if (entity.details == null) {
+            entity.details = new java.util.ArrayList<>();
         }
+        DamageTypeDetails details = entity.details.stream()
+                .filter(d -> d.lang.equals(payload.lang))
+                .findFirst()
+                .orElseGet(() -> {
+                    DamageTypeDetails d = new DamageTypeDetails();
+                    d.idDamageType = id;
+                    d.lang = payload.lang;
+                    d.damageType = entity;
+                    entity.details.add(d);
+                    return d;
+                });
+
+        details.name = payload.name;
+
         return Response.ok(entity).build();
     }
 

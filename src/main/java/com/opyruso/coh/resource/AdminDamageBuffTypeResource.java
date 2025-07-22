@@ -1,7 +1,9 @@
 package com.opyruso.coh.resource;
 
 import com.opyruso.coh.entity.DamageBuffType;
+import com.opyruso.coh.entity.DamageBuffTypeDetails;
 import com.opyruso.coh.repository.DamageBuffTypeRepository;
+import com.opyruso.coh.model.dto.DamageBuffTypeWithDetails;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -20,24 +22,48 @@ public class AdminDamageBuffTypeResource {
     @POST
     @RolesAllowed("admin")
     @Transactional
-    public Response create(DamageBuffType damageBuffType) {
+    public Response create(DamageBuffTypeWithDetails payload) {
+        DamageBuffType damageBuffType = new DamageBuffType();
+        damageBuffType.idDamageBuffType = payload.idDamageBuffType;
+
+        DamageBuffTypeDetails details = new DamageBuffTypeDetails();
+        details.idDamageBuffType = payload.idDamageBuffType;
+        details.lang = payload.lang;
+        details.name = payload.name;
+        details.damageBuffType = damageBuffType;
+
+        damageBuffType.details = new java.util.ArrayList<>(java.util.List.of(details));
+
         repository.persist(damageBuffType);
         return Response.status(Response.Status.CREATED).entity(damageBuffType).build();
     }
 
     @PUT
+    @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response update(DamageBuffType damageBuffType) {
-        DamageBuffType entity = repository.findById(damageBuffType.idDamageBuffType);
+    public Response update(@PathParam("id") Integer id, DamageBuffTypeWithDetails payload) {
+        DamageBuffType entity = repository.findById(id);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.details.clear();
-        if (damageBuffType.details != null) {
-            damageBuffType.details.forEach(d -> d.idDamageBuffType = damageBuffType.idDamageBuffType);
-            entity.details.addAll(damageBuffType.details);
+        if (entity.details == null) {
+            entity.details = new java.util.ArrayList<>();
         }
+        DamageBuffTypeDetails details = entity.details.stream()
+                .filter(d -> d.lang.equals(payload.lang))
+                .findFirst()
+                .orElseGet(() -> {
+                    DamageBuffTypeDetails d = new DamageBuffTypeDetails();
+                    d.idDamageBuffType = id;
+                    d.lang = payload.lang;
+                    d.damageBuffType = entity;
+                    entity.details.add(d);
+                    return d;
+                });
+
+        details.name = payload.name;
+
         return Response.ok(entity).build();
     }
 

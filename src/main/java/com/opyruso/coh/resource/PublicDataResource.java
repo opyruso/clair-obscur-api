@@ -29,32 +29,27 @@ public class PublicDataResource {
         data.characters = Character
                 .find(
                         "select distinct c from Character c " +
-                                "left join fetch c.details d on d.lang = ?1",
-                        lang)
+                                "left join fetch c.details d")
                 .list();
         data.damageTypes = DamageType
                 .find(
                         "select distinct d from DamageType d " +
-                                "left join fetch d.details dd on dd.lang = ?1",
-                        lang)
+                                "left join fetch d.details dd")
                 .list();
         data.damageBuffTypes = DamageBuffType
                 .find(
                         "select distinct d from DamageBuffType d " +
-                                "left join fetch d.details dd on dd.lang = ?1",
-                        lang)
+                                "left join fetch d.details dd")
                 .list();
         data.pictos = Picto
                 .find(
                         "select distinct p from Picto p " +
-                                "left join fetch p.details d on d.lang = ?1",
-                        lang)
+                                "left join fetch p.details d")
                 .list();
         data.weapons = Weapon
                 .find(
                         "select distinct w from Weapon w " +
-                                "left join fetch w.details d on d.lang = ?1",
-                        lang)
+                                "left join fetch w.details d")
                 .list();
 
         data.characters.forEach(c -> {

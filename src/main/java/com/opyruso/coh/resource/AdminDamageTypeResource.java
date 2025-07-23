@@ -42,7 +42,7 @@ public class AdminDamageTypeResource {
     @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response update(@PathParam("id") Integer id, DamageTypeWithDetails payload) {
+    public Response update(@PathParam("id") String id, DamageTypeWithDetails payload) {
         DamageType entity = repository.findById(id);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -71,7 +71,7 @@ public class AdminDamageTypeResource {
     @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") Integer id) {
+    public Response delete(@PathParam("id") String id) {
         boolean deleted = repository.deleteById(id);
         if (!deleted) {
             return Response.status(Response.Status.NOT_FOUND).build();

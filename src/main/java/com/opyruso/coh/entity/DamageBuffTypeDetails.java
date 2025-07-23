@@ -12,7 +12,7 @@ public class DamageBuffTypeDetails extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_damage_buff_type")
-    public Integer idDamageBuffType;
+    public String idDamageBuffType;
 
     @Id
     @Column(name = "lang")
@@ -27,7 +27,7 @@ public class DamageBuffTypeDetails extends PanacheEntityBase {
     public DamageBuffType damageBuffType;
 
     public static class PK implements Serializable {
-        public Integer idDamageBuffType;
+        public String idDamageBuffType;
         public String lang;
 
         @Override

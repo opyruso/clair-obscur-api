@@ -10,7 +10,7 @@ public class DamageType extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_damage_type")
-    public Integer idDamageType;
+    public String idDamageType;
 
     @OneToMany(mappedBy = "damageType", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<DamageTypeDetails> details;

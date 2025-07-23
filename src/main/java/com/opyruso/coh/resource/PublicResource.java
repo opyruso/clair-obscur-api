@@ -29,7 +29,7 @@ public class PublicResource {
     @POST
     @Transactional
     public Response create(String body) {
-        Long id = generateKey();
+        String id = generateKey();
         CohBuild build = new CohBuild();
         build.idBuild = id;
         build.content = Base64.getEncoder().encodeToString(body.getBytes(StandardCharsets.UTF_8));
@@ -39,7 +39,7 @@ public class PublicResource {
 
     @GET
     @Path("{id}")
-    public Response get(@PathParam("id") Long id) {
+    public Response get(@PathParam("id") String id) {
         CohBuild build = repository.findById(id);
         if (build == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -48,7 +48,7 @@ public class PublicResource {
         return Response.ok(json, MediaType.APPLICATION_JSON).build();
     }
 
-    private Long generateKey() {
-        return UUID.randomUUID().getMostSignificantBits();
+    private String generateKey() {
+        return UUID.randomUUID().toString();
     }
 }

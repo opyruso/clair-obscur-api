@@ -3,9 +3,9 @@ package com.opyruso.coh.model.dto;
 public class WeaponWithDetails {
     public String idWeapon;
     public String character;
-    public Integer damageType;
-    public Integer damageBuffType1;
-    public Integer damageBuffType2;
+    public String damageType;
+    public String damageBuffType1;
+    public String damageBuffType2;
     public String lang;
     public String name;
     public String region;

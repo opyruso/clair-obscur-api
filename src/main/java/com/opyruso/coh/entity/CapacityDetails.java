@@ -12,7 +12,7 @@ public class CapacityDetails extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_capacity")
-    public Integer idCapacity;
+    public String idCapacity;
 
     @Id
     @Column(name = "lang")
@@ -39,7 +39,7 @@ public class CapacityDetails extends PanacheEntityBase {
     public Capacity capacity;
 
     public static class PK implements Serializable {
-        public Integer idCapacity;
+        public String idCapacity;
         public String lang;
 
         @Override

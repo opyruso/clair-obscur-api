@@ -10,7 +10,7 @@ public class Capacity extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_capacity")
-    public Integer idCapacity;
+    public String idCapacity;
 
     @ManyToOne
     @JoinColumn(name = "id_character")

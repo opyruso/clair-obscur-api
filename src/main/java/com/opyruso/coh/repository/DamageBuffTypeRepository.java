@@ -5,5 +5,5 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class DamageBuffTypeRepository implements PanacheRepositoryBase<DamageBuffType, Integer> {
+public class DamageBuffTypeRepository implements PanacheRepositoryBase<DamageBuffType, String> {
 }

@@ -10,7 +10,7 @@ public class CapacityType extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_capacity_type")
-    public Integer idCapacityType;
+    public String idCapacityType;
 
     @OneToMany(mappedBy = "capacityType", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<CapacityTypeDetails> details;

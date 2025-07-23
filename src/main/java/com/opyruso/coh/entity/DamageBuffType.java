@@ -10,7 +10,7 @@ public class DamageBuffType extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_damage_buff_type")
-    public Integer idDamageBuffType;
+    public String idDamageBuffType;
 
     @OneToMany(mappedBy = "damageBuffType", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<DamageBuffTypeDetails> details;

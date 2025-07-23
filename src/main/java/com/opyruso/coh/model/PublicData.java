@@ -7,6 +7,8 @@ import com.opyruso.coh.entity.DamageBuffType;
 import com.opyruso.coh.entity.DamageType;
 import com.opyruso.coh.entity.Picto;
 import com.opyruso.coh.entity.Weapon;
+import com.opyruso.coh.entity.Capacity;
+import com.opyruso.coh.entity.CapacityType;
 
 public class PublicData {
     public List<Character> characters;
@@ -14,4 +16,6 @@ public class PublicData {
     public List<DamageBuffType> damageBuffTypes;
     public List<Picto> pictos;
     public List<Weapon> weapons;
+    public List<Capacity> capacities;
+    public List<CapacityType> capacityTypes;
 }

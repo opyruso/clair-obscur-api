@@ -5,6 +5,8 @@ import com.opyruso.coh.entity.DamageBuffType;
 import com.opyruso.coh.entity.DamageType;
 import com.opyruso.coh.entity.Picto;
 import com.opyruso.coh.entity.Weapon;
+import com.opyruso.coh.entity.Capacity;
+import com.opyruso.coh.entity.CapacityType;
 import com.opyruso.coh.model.PublicData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,6 +57,16 @@ public class PublicDataResource {
                 .find(
                         "select distinct w from Weapon w " +
                                 "left join fetch w.details d")
+                .list();
+        data.capacities = Capacity
+                .find(
+                        "select distinct c from Capacity c " +
+                                "left join fetch c.details d")
+                .list();
+        data.capacityTypes = CapacityType
+                .find(
+                        "select distinct ct from CapacityType ct " +
+                                "left join fetch ct.details d")
                 .list();
 
         em.clear();
@@ -130,6 +142,36 @@ public class PublicDataResource {
                 wd.weaponEffect2 = "";
                 wd.weaponEffect3 = "";
                 w.details = new java.util.ArrayList<>(java.util.List.of(wd));
+            }
+        });
+
+        data.capacities.forEach(c -> {
+            if (c.details != null) {
+                c.details.removeIf(d -> !lang.equals(d.lang));
+            }
+            if (c.details == null || c.details.isEmpty()) {
+                var cd = new com.opyruso.coh.entity.CapacityDetails();
+                cd.idCapacity = c.idCapacity;
+                cd.lang = lang;
+                cd.name = "";
+                cd.effectPrimary = "";
+                cd.effectSecondary = "";
+                cd.bonusDescription = "";
+                cd.additionnalDescription = "";
+                c.details = new java.util.ArrayList<>(java.util.List.of(cd));
+            }
+        });
+
+        data.capacityTypes.forEach(ct -> {
+            if (ct.details != null) {
+                ct.details.removeIf(d -> !lang.equals(d.lang));
+            }
+            if (ct.details == null || ct.details.isEmpty()) {
+                var ctd = new com.opyruso.coh.entity.CapacityTypeDetails();
+                ctd.idCapacityType = ct.idCapacityType;
+                ctd.lang = lang;
+                ctd.name = "";
+                ct.details = new java.util.ArrayList<>(java.util.List.of(ctd));
             }
         });
 

@@ -1,0 +1,17 @@
+package com.opyruso.coh.entity;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "capacity_type")
+public class CapacityType extends PanacheEntityBase {
+
+    @Id
+    @Column(name = "id_capacity_type")
+    public Integer idCapacityType;
+
+    @OneToMany(mappedBy = "capacityType", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<CapacityTypeDetails> details;
+}

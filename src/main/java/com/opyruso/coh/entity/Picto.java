@@ -31,5 +31,6 @@ public class Picto extends PanacheEntityBase {
     public int luminaCost;
 
     @OneToMany(mappedBy = "picto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<PictoDetails> details;
 }

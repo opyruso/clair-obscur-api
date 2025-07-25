@@ -17,5 +17,6 @@ public class Outfit extends PanacheEntityBase {
     public Character character;
 
     @OneToMany(mappedBy = "outfit", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<OutfitDetails> details;
 }

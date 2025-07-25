@@ -13,5 +13,6 @@ public class DamageBuffType extends PanacheEntityBase {
     public String idDamageBuffType;
 
     @OneToMany(mappedBy = "damageBuffType", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<DamageBuffTypeDetails> details;
 }

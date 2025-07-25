@@ -34,6 +34,7 @@ public class Weapon extends PanacheEntityBase {
     public DamageBuffType damageBuffType2;
 
     @OneToMany(mappedBy = "weapon", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<WeaponDetails> details;
 
     public static class PK implements java.io.Serializable {

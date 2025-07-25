@@ -13,5 +13,6 @@ public class DamageType extends PanacheEntityBase {
     public String idDamageType;
 
     @OneToMany(mappedBy = "damageType", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<DamageTypeDetails> details;
 }

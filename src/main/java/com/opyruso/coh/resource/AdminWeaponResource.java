@@ -1,6 +1,10 @@
 package com.opyruso.coh.resource;
 
-import com.opyruso.coh.entity.*;
+import com.opyruso.coh.entity.Character;
+import com.opyruso.coh.entity.DamageBuffType;
+import com.opyruso.coh.entity.DamageType;
+import com.opyruso.coh.entity.Weapon;
+import com.opyruso.coh.entity.WeaponDetails;
 import com.opyruso.coh.repository.*;
 import com.opyruso.coh.model.dto.WeaponWithDetails;
 import jakarta.annotation.security.RolesAllowed;
@@ -28,12 +32,29 @@ public class AdminWeaponResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(WeaponWithDetails payload) {
+        Character character = characterRepository.findById(payload.character);
+        if (character == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
+        }
+        DamageType damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
+        if (payload.damageType != null && damageType == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage type").build();
+        }
+        DamageBuffType damageBuffType1 = payload.damageBuffType1 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType1);
+        if (payload.damageBuffType1 != null && damageBuffType1 == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 1").build();
+        }
+        DamageBuffType damageBuffType2 = payload.damageBuffType2 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType2);
+        if (payload.damageBuffType2 != null && damageBuffType2 == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
+        }
+
         Weapon weapon = new Weapon();
         weapon.idWeapon = payload.idWeapon;
-        weapon.character = characterRepository.findById(payload.character);
-        weapon.damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
-        weapon.damageBuffType1 = payload.damageBuffType1 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType1);
-        weapon.damageBuffType2 = payload.damageBuffType2 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType2);
+        weapon.character = character;
+        weapon.damageType = damageType;
+        weapon.damageBuffType1 = damageBuffType1;
+        weapon.damageBuffType2 = damageBuffType2;
 
         WeaponDetails details = new WeaponDetails();
         details.idWeapon = payload.idWeapon;
@@ -61,10 +82,28 @@ public class AdminWeaponResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.character = characterRepository.findById(payload.character);
-        entity.damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
-        entity.damageBuffType1 = payload.damageBuffType1 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType1);
-        entity.damageBuffType2 = payload.damageBuffType2 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType2);
+
+        Character character = characterRepository.findById(payload.character);
+        if (character == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
+        }
+        DamageType damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
+        if (payload.damageType != null && damageType == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage type").build();
+        }
+        DamageBuffType damageBuffType1 = payload.damageBuffType1 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType1);
+        if (payload.damageBuffType1 != null && damageBuffType1 == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 1").build();
+        }
+        DamageBuffType damageBuffType2 = payload.damageBuffType2 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType2);
+        if (payload.damageBuffType2 != null && damageBuffType2 == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
+        }
+
+        entity.character = character;
+        entity.damageType = damageType;
+        entity.damageBuffType1 = damageBuffType1;
+        entity.damageBuffType2 = damageBuffType2;
 
         if (entity.details == null) {
             entity.details = new java.util.ArrayList<>();

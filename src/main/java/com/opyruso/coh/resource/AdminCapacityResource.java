@@ -1,6 +1,10 @@
 package com.opyruso.coh.resource;
 
-import com.opyruso.coh.entity.*;
+import com.opyruso.coh.entity.Character;
+import com.opyruso.coh.entity.Capacity;
+import com.opyruso.coh.entity.CapacityDetails;
+import com.opyruso.coh.entity.CapacityType;
+import com.opyruso.coh.entity.DamageType;
 import com.opyruso.coh.repository.*;
 import com.opyruso.coh.model.dto.CapacityWithDetails;
 import jakarta.annotation.security.RolesAllowed;
@@ -28,13 +32,26 @@ public class AdminCapacityResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(CapacityWithDetails payload) {
+        Character character = characterRepository.findById(payload.character);
+        if (character == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
+        }
+        DamageType damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
+        if (payload.damageType != null && damageType == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage type").build();
+        }
+        CapacityType type = payload.type == null ? null : capacityTypeRepository.findById(payload.type);
+        if (payload.type != null && type == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid capacity type").build();
+        }
+
         Capacity capacity = new Capacity();
         capacity.idCapacity = payload.idCapacity;
-        capacity.character = characterRepository.findById(payload.character);
+        capacity.character = character;
         capacity.energyCost = payload.energyCost;
         capacity.canBreak = payload.canBreak;
-        capacity.damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
-        capacity.type = payload.type == null ? null : capacityTypeRepository.findById(payload.type);
+        capacity.damageType = damageType;
+        capacity.type = type;
         capacity.isMultiTarget = payload.isMultiTarget;
         capacity.gridPositionX = payload.gridPositionX;
         capacity.gridPositionY = payload.gridPositionY;
@@ -64,11 +81,25 @@ public class AdminCapacityResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.character = characterRepository.findById(payload.character);
+
+        Character character = characterRepository.findById(payload.character);
+        if (character == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
+        }
+        DamageType damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
+        if (payload.damageType != null && damageType == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage type").build();
+        }
+        CapacityType type = payload.type == null ? null : capacityTypeRepository.findById(payload.type);
+        if (payload.type != null && type == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid capacity type").build();
+        }
+
+        entity.character = character;
         entity.energyCost = payload.energyCost;
         entity.canBreak = payload.canBreak;
-        entity.damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
-        entity.type = payload.type == null ? null : capacityTypeRepository.findById(payload.type);
+        entity.damageType = damageType;
+        entity.type = type;
         entity.isMultiTarget = payload.isMultiTarget;
         entity.gridPositionX = payload.gridPositionX;
         entity.gridPositionY = payload.gridPositionY;

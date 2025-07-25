@@ -1,6 +1,10 @@
 package com.opyruso.coh.resource;
 
-import com.opyruso.coh.entity.*;
+import com.opyruso.coh.entity.Character;
+import com.opyruso.coh.entity.Capacity;
+import com.opyruso.coh.entity.CapacityDetails;
+import com.opyruso.coh.entity.CapacityType;
+import com.opyruso.coh.entity.DamageType;
 import com.opyruso.coh.repository.*;
 import com.opyruso.coh.model.dto.CapacityWithDetails;
 import jakarta.annotation.security.RolesAllowed;

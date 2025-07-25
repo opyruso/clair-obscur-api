@@ -1,6 +1,10 @@
 package com.opyruso.coh.resource;
 
-import com.opyruso.coh.entity.*;
+import com.opyruso.coh.entity.Character;
+import com.opyruso.coh.entity.DamageBuffType;
+import com.opyruso.coh.entity.DamageType;
+import com.opyruso.coh.entity.Weapon;
+import com.opyruso.coh.entity.WeaponDetails;
 import com.opyruso.coh.repository.*;
 import com.opyruso.coh.model.dto.WeaponWithDetails;
 import jakarta.annotation.security.RolesAllowed;

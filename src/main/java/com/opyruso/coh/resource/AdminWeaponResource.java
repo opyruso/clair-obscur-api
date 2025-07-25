@@ -51,6 +51,7 @@ public class AdminWeaponResource {
 
         Weapon weapon = new Weapon();
         weapon.idWeapon = payload.idWeapon;
+        weapon.idCharacter = character.idCharacter;
         weapon.character = character;
         weapon.damageType = damageType;
         weapon.damageBuffType1 = damageBuffType1;
@@ -58,6 +59,7 @@ public class AdminWeaponResource {
 
         WeaponDetails details = new WeaponDetails();
         details.idWeapon = payload.idWeapon;
+        details.idCharacter = character.idCharacter;
         details.lang = payload.lang;
         details.name = payload.name;
         details.region = payload.region;
@@ -78,7 +80,7 @@ public class AdminWeaponResource {
     @RolesAllowed("admin")
     @Transactional
     public Response update(@PathParam("id") String id, WeaponWithDetails payload) {
-        Weapon entity = repository.findById(id);
+        Weapon entity = repository.findByIdWeapon(id);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -100,6 +102,7 @@ public class AdminWeaponResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
         }
 
+        entity.idCharacter = character.idCharacter;
         entity.character = character;
         entity.damageType = damageType;
         entity.damageBuffType1 = damageBuffType1;
@@ -114,11 +117,14 @@ public class AdminWeaponResource {
                 .orElseGet(() -> {
                     WeaponDetails d = new WeaponDetails();
                     d.idWeapon = id;
+                    d.idCharacter = character.idCharacter;
                     d.lang = payload.lang;
                     d.weapon = entity;
                     entity.details.add(d);
                     return d;
                 });
+
+        details.idCharacter = character.idCharacter;
 
         details.name = payload.name;
         details.region = payload.region;
@@ -135,7 +141,7 @@ public class AdminWeaponResource {
     @RolesAllowed("admin")
     @Transactional
     public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteById(id);
+        boolean deleted = repository.deleteByIdWeapon(id);
         if (!deleted) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

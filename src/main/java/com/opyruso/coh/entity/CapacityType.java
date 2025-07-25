@@ -13,5 +13,6 @@ public class CapacityType extends PanacheEntityBase {
     public String idCapacityType;
 
     @OneToMany(mappedBy = "capacityType", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<CapacityTypeDetails> details;
 }

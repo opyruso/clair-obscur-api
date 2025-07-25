@@ -40,5 +40,6 @@ public class Capacity extends PanacheEntityBase {
     public Integer gridPositionY;
 
     @OneToMany(mappedBy = "capacity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<CapacityDetails> details;
 }

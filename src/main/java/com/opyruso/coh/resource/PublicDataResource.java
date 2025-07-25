@@ -7,6 +7,7 @@ import com.opyruso.coh.entity.Picto;
 import com.opyruso.coh.entity.Weapon;
 import com.opyruso.coh.entity.Capacity;
 import com.opyruso.coh.entity.CapacityType;
+import com.opyruso.coh.entity.Outfit;
 import com.opyruso.coh.model.PublicData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,6 +68,11 @@ public class PublicDataResource {
                 .find(
                         "select distinct ct from CapacityType ct " +
                                 "left join fetch ct.details d")
+                .list();
+        data.outfits = Outfit
+                .find(
+                        "select distinct o from Outfit o " +
+                                "left join fetch o.details d")
                 .list();
 
         em.clear();
@@ -142,6 +148,20 @@ public class PublicDataResource {
                 wd.weaponEffect2 = "";
                 wd.weaponEffect3 = "";
                 w.details = new java.util.ArrayList<>(java.util.List.of(wd));
+            }
+        });
+
+        data.outfits.forEach(o -> {
+            if (o.details != null) {
+                o.details.removeIf(d -> !lang.equals(d.lang));
+            }
+            if (o.details == null || o.details.isEmpty()) {
+                var od = new com.opyruso.coh.entity.OutfitDetails();
+                od.idOutfit = o.idOutfit;
+                od.lang = lang;
+                od.name = "";
+                od.description = "";
+                o.details = new java.util.ArrayList<>(java.util.List.of(od));
             }
         });
 

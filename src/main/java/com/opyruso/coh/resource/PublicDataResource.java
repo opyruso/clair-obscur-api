@@ -51,7 +51,11 @@ public class PublicDataResource {
     public Response getAll(@PathParam("lang") String lang) {
         PublicData data = new PublicData();
 
-        var characterDetails = CharacterDetails.find("lang", lang).list().stream()
+        java.util.Map<String, CharacterDetails> characterDetails = CharacterDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (CharacterDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idCharacter, d -> d));
         data.characters = Character.listAll().stream().map(c -> {
             CharacterDetails d = (CharacterDetails) characterDetails.get(c.idCharacter);
@@ -63,7 +67,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var damageTypeDetails = DamageTypeDetails.find("lang", lang).list().stream()
+        java.util.Map<String, DamageTypeDetails> damageTypeDetails = DamageTypeDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (DamageTypeDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idDamageType, d -> d));
         data.damageTypes = DamageType.listAll().stream().map(dt -> {
             DamageTypeDetails dd = (DamageTypeDetails) damageTypeDetails.get(dt.idDamageType);
@@ -74,7 +82,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var damageBuffTypeDetails = DamageBuffTypeDetails.find("lang", lang).list().stream()
+        java.util.Map<String, DamageBuffTypeDetails> damageBuffTypeDetails = DamageBuffTypeDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (DamageBuffTypeDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idDamageBuffType, d -> d));
         data.damageBuffTypes = DamageBuffType.listAll().stream().map(db -> {
             DamageBuffTypeDetails dd = (DamageBuffTypeDetails) damageBuffTypeDetails.get(db.idDamageBuffType);
@@ -85,7 +97,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var pictoDetails = PictoDetails.find("lang", lang).list().stream()
+        java.util.Map<String, PictoDetails> pictoDetails = PictoDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (PictoDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idPicto, d -> d));
         data.pictos = Picto.listAll().stream().map(p -> {
             PictoDetails pd = (PictoDetails) pictoDetails.get(p.idPicto);
@@ -112,7 +128,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var weaponDetails = WeaponDetails.find("lang", lang).list().stream()
+        java.util.Map<String, WeaponDetails> weaponDetails = WeaponDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (WeaponDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idWeapon + "#" + d.idCharacter, d -> d));
         data.weapons = Weapon.listAll().stream().map(w -> {
             WeaponDetails wd = (WeaponDetails) weaponDetails.get(w.idWeapon + "#" + w.idCharacter);
@@ -141,7 +161,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var outfitDetails = OutfitDetails.find("lang", lang).list().stream()
+        java.util.Map<String, OutfitDetails> outfitDetails = OutfitDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (OutfitDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idOutfit, d -> d));
         data.outfits = Outfit.listAll().stream().map(o -> {
             OutfitDetails od = (OutfitDetails) outfitDetails.get(o.idOutfit);
@@ -154,7 +178,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var capacityDetails = CapacityDetails.find("lang", lang).list().stream()
+        java.util.Map<String, CapacityDetails> capacityDetails = CapacityDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (CapacityDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idCapacity, d -> d));
         data.capacities = Capacity.listAll().stream().map(c -> {
             CapacityDetails cd = (CapacityDetails) capacityDetails.get(c.idCapacity);
@@ -185,7 +213,11 @@ public class PublicDataResource {
             return dto;
         }).toList();
 
-        var capacityTypeDetails = CapacityTypeDetails.find("lang", lang).list().stream()
+        java.util.Map<String, CapacityTypeDetails> capacityTypeDetails = CapacityTypeDetails
+                .find("lang", lang)
+                .list()
+                .stream()
+                .map(e -> (CapacityTypeDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idCapacityType, d -> d));
         data.capacityTypes = CapacityType.listAll().stream().map(ct -> {
             CapacityTypeDetails ctd = (CapacityTypeDetails) capacityTypeDetails.get(ct.idCapacityType);

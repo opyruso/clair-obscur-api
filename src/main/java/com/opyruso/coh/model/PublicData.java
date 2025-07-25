@@ -9,6 +9,7 @@ import com.opyruso.coh.entity.Picto;
 import com.opyruso.coh.entity.Weapon;
 import com.opyruso.coh.entity.Capacity;
 import com.opyruso.coh.entity.CapacityType;
+import com.opyruso.coh.entity.Outfit;
 
 public class PublicData {
     public List<Character> characters;
@@ -18,4 +19,5 @@ public class PublicData {
     public List<Weapon> weapons;
     public List<Capacity> capacities;
     public List<CapacityType> capacityTypes;
+    public List<Outfit> outfits;
 }

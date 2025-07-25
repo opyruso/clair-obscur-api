@@ -49,6 +49,7 @@ public class AdminWeaponResourceTest {
 
         Weapon w = new Weapon();
         w.idWeapon = "w1";
+        w.idCharacter = "c1";
         w.character = c;
         w.damageType = dt;
         w.damageBuffType1 = db;

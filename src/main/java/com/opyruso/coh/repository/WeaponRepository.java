@@ -5,5 +5,13 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class WeaponRepository implements PanacheRepositoryBase<Weapon, String> {
+public class WeaponRepository implements PanacheRepositoryBase<Weapon, Weapon.PK> {
+
+    public Weapon findByIdWeapon(String idWeapon) {
+        return find("idWeapon", idWeapon).firstResult();
+    }
+
+    public boolean deleteByIdWeapon(String idWeapon) {
+        return delete("idWeapon", idWeapon) > 0;
+    }
 }

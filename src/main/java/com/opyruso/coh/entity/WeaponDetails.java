@@ -37,7 +37,7 @@ public class WeaponDetails extends PanacheEntityBase {
     public String weaponEffect3;
 
     @ManyToOne
-    @JoinColumn(name = "id_weapon", insertable = false, updatable = false)
+    @JoinColumn(name = "id_weapon", referencedColumnName = "id_weapon", insertable = false, updatable = false)
     @JsonIgnore
     public Weapon weapon;
 

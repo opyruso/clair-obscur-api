@@ -1,13 +1,29 @@
 package com.opyruso.coh.resource;
 
 import com.opyruso.coh.entity.Character;
-import com.opyruso.coh.entity.DamageBuffType;
+import com.opyruso.coh.entity.CharacterDetails;
 import com.opyruso.coh.entity.DamageType;
+import com.opyruso.coh.entity.DamageTypeDetails;
+import com.opyruso.coh.entity.DamageBuffType;
+import com.opyruso.coh.entity.DamageBuffTypeDetails;
 import com.opyruso.coh.entity.Picto;
+import com.opyruso.coh.entity.PictoDetails;
 import com.opyruso.coh.entity.Weapon;
+import com.opyruso.coh.entity.WeaponDetails;
 import com.opyruso.coh.entity.Capacity;
+import com.opyruso.coh.entity.CapacityDetails;
 import com.opyruso.coh.entity.CapacityType;
+import com.opyruso.coh.entity.CapacityTypeDetails;
 import com.opyruso.coh.entity.Outfit;
+import com.opyruso.coh.entity.OutfitDetails;
+import com.opyruso.coh.model.dto.CharacterWithDetails;
+import com.opyruso.coh.model.dto.DamageTypeWithDetails;
+import com.opyruso.coh.model.dto.DamageBuffTypeWithDetails;
+import com.opyruso.coh.model.dto.PictoWithDetails;
+import com.opyruso.coh.model.dto.WeaponWithDetails;
+import com.opyruso.coh.model.dto.CapacityWithDetails;
+import com.opyruso.coh.model.dto.CapacityTypeWithDetails;
+import com.opyruso.coh.model.dto.OutfitWithDetails;
 import com.opyruso.coh.model.PublicData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,167 +50,151 @@ public class PublicDataResource {
     @Transactional
     public Response getAll(@PathParam("lang") String lang) {
         PublicData data = new PublicData();
-        data.characters = Character
-                .find(
-                        "select distinct c from Character c " +
-                                "left join fetch c.details d")
-                .list();
-        data.damageTypes = DamageType
-                .find(
-                        "select distinct d from DamageType d " +
-                                "left join fetch d.details dd")
-                .list();
-        data.damageBuffTypes = DamageBuffType
-                .find(
-                        "select distinct d from DamageBuffType d " +
-                                "left join fetch d.details dd")
-                .list();
-        data.pictos = Picto
-                .find(
-                        "select distinct p from Picto p " +
-                                "left join fetch p.details d")
-                .list();
-        data.weapons = Weapon
-                .find(
-                        "select distinct w from Weapon w " +
-                                "left join fetch w.details d")
-                .list();
-        data.capacities = Capacity
-                .find(
-                        "select distinct c from Capacity c " +
-                                "left join fetch c.details d")
-                .list();
-        data.capacityTypes = CapacityType
-                .find(
-                        "select distinct ct from CapacityType ct " +
-                                "left join fetch ct.details d")
-                .list();
-        data.outfits = Outfit
-                .find(
-                        "select distinct o from Outfit o " +
-                                "left join fetch o.details d")
-                .list();
 
-        em.clear();
+        var characterDetails = CharacterDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idCharacter, d -> d));
+        data.characters = Character.listAll().stream().map(c -> {
+            CharacterDetails d = (CharacterDetails) characterDetails.get(c.idCharacter);
+            CharacterWithDetails dto = new CharacterWithDetails();
+            dto.idCharacter = c.idCharacter;
+            dto.lang = lang;
+            dto.name = d != null ? d.name : "";
+            dto.story = d != null ? d.story : "";
+            return dto;
+        }).toList();
 
-        data.characters.forEach(c -> {
-            if (c.details != null) {
-                c.details.removeIf(d -> !lang.equals(d.lang));
-            }
-            if (c.details == null || c.details.isEmpty()) {
-                var d = new com.opyruso.coh.entity.CharacterDetails();
-                d.idCharacter = c.idCharacter;
-                d.lang = lang;
-                d.name = "";
-                d.story = "";
-                c.details = new java.util.ArrayList<>(java.util.List.of(d));
-            }
-        });
+        var damageTypeDetails = DamageTypeDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idDamageType, d -> d));
+        data.damageTypes = DamageType.listAll().stream().map(dt -> {
+            DamageTypeDetails dd = (DamageTypeDetails) damageTypeDetails.get(dt.idDamageType);
+            DamageTypeWithDetails dto = new DamageTypeWithDetails();
+            dto.idDamageType = dt.idDamageType;
+            dto.lang = lang;
+            dto.name = dd != null ? dd.name : "";
+            return dto;
+        }).toList();
 
-        data.damageTypes.forEach(dt -> {
-            if (dt.details != null) {
-                dt.details.removeIf(d -> !lang.equals(d.lang));
-            }
-            if (dt.details == null || dt.details.isEmpty()) {
-                var dd = new com.opyruso.coh.entity.DamageTypeDetails();
-                dd.idDamageType = dt.idDamageType;
-                dd.lang = lang;
-                dd.name = "";
-                dt.details = new java.util.ArrayList<>(java.util.List.of(dd));
-            }
-        });
+        var damageBuffTypeDetails = DamageBuffTypeDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idDamageBuffType, d -> d));
+        data.damageBuffTypes = DamageBuffType.listAll().stream().map(db -> {
+            DamageBuffTypeDetails dd = (DamageBuffTypeDetails) damageBuffTypeDetails.get(db.idDamageBuffType);
+            DamageBuffTypeWithDetails dto = new DamageBuffTypeWithDetails();
+            dto.idDamageBuffType = db.idDamageBuffType;
+            dto.lang = lang;
+            dto.name = dd != null ? dd.name : "";
+            return dto;
+        }).toList();
 
-        data.damageBuffTypes.forEach(db -> {
-            if (db.details != null) {
-                db.details.removeIf(d -> !lang.equals(d.lang));
+        var pictoDetails = PictoDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idPicto, d -> d));
+        data.pictos = Picto.listAll().stream().map(p -> {
+            PictoDetails pd = (PictoDetails) pictoDetails.get(p.idPicto);
+            PictoWithDetails dto = new PictoWithDetails();
+            dto.idPicto = p.idPicto;
+            dto.level = p.level;
+            dto.bonusDefense = p.bonusDefense;
+            dto.bonusSpeed = p.bonusSpeed;
+            dto.bonusCritChance = p.bonusCritChance;
+            dto.bonusHealth = p.bonusHealth;
+            dto.luminaCost = p.luminaCost;
+            dto.lang = lang;
+            if (pd != null) {
+                dto.name = pd.name;
+                dto.region = pd.region;
+                dto.descrptionBonusLumina = pd.descrptionBonusLumina;
+                dto.unlockDescription = pd.unlockDescription;
+            } else {
+                dto.name = "";
+                dto.region = "";
+                dto.descrptionBonusLumina = "";
+                dto.unlockDescription = "";
             }
-            if (db.details == null || db.details.isEmpty()) {
-                var dd = new com.opyruso.coh.entity.DamageBuffTypeDetails();
-                dd.idDamageBuffType = db.idDamageBuffType;
-                dd.lang = lang;
-                dd.name = "";
-                db.details = new java.util.ArrayList<>(java.util.List.of(dd));
-            }
-        });
+            return dto;
+        }).toList();
 
-        data.pictos.forEach(p -> {
-            if (p.details != null) {
-                p.details.removeIf(d -> !lang.equals(d.lang));
+        var weaponDetails = WeaponDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idWeapon + "#" + d.idCharacter, d -> d));
+        data.weapons = Weapon.listAll().stream().map(w -> {
+            WeaponDetails wd = (WeaponDetails) weaponDetails.get(w.idWeapon + "#" + w.idCharacter);
+            WeaponWithDetails dto = new WeaponWithDetails();
+            dto.idWeapon = w.idWeapon;
+            dto.character = w.character != null ? w.character.idCharacter : w.idCharacter;
+            dto.damageType = w.damageType != null ? w.damageType.idDamageType : null;
+            dto.damageBuffType1 = w.damageBuffType1 != null ? w.damageBuffType1.idDamageBuffType : null;
+            dto.damageBuffType2 = w.damageBuffType2 != null ? w.damageBuffType2.idDamageBuffType : null;
+            dto.lang = lang;
+            if (wd != null) {
+                dto.name = wd.name;
+                dto.region = wd.region;
+                dto.unlockDescription = wd.unlockDescription;
+                dto.weaponEffect1 = wd.weaponEffect1;
+                dto.weaponEffect2 = wd.weaponEffect2;
+                dto.weaponEffect3 = wd.weaponEffect3;
+            } else {
+                dto.name = "";
+                dto.region = "";
+                dto.unlockDescription = "";
+                dto.weaponEffect1 = "";
+                dto.weaponEffect2 = "";
+                dto.weaponEffect3 = "";
             }
-            if (p.details == null || p.details.isEmpty()) {
-                var pd = new com.opyruso.coh.entity.PictoDetails();
-                pd.idPicto = p.idPicto;
-                pd.lang = lang;
-                pd.name = "";
-                pd.region = "";
-                pd.descrptionBonusLumina = "";
-                pd.unlockDescription = "";
-                p.details = new java.util.ArrayList<>(java.util.List.of(pd));
-            }
-        });
+            return dto;
+        }).toList();
 
-        data.weapons.forEach(w -> {
-            if (w.details != null) {
-                w.details.removeIf(d -> !lang.equals(d.lang));
-            }
-            if (w.details == null || w.details.isEmpty()) {
-                var wd = new com.opyruso.coh.entity.WeaponDetails();
-                wd.idWeapon = w.idWeapon;
-                wd.idCharacter = w.idCharacter;
-                wd.lang = lang;
-                wd.name = "";
-                wd.region = "";
-                wd.unlockDescription = "";
-                wd.weaponEffect1 = "";
-                wd.weaponEffect2 = "";
-                wd.weaponEffect3 = "";
-                w.details = new java.util.ArrayList<>(java.util.List.of(wd));
-            }
-        });
+        var outfitDetails = OutfitDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idOutfit, d -> d));
+        data.outfits = Outfit.listAll().stream().map(o -> {
+            OutfitDetails od = (OutfitDetails) outfitDetails.get(o.idOutfit);
+            OutfitWithDetails dto = new OutfitWithDetails();
+            dto.idOutfit = o.idOutfit;
+            dto.character = o.character != null ? o.character.idCharacter : null;
+            dto.lang = lang;
+            dto.name = od != null ? od.name : "";
+            dto.description = od != null ? od.description : "";
+            return dto;
+        }).toList();
 
-        data.outfits.forEach(o -> {
-            if (o.details != null) {
-                o.details.removeIf(d -> !lang.equals(d.lang));
+        var capacityDetails = CapacityDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idCapacity, d -> d));
+        data.capacities = Capacity.listAll().stream().map(c -> {
+            CapacityDetails cd = (CapacityDetails) capacityDetails.get(c.idCapacity);
+            CapacityWithDetails dto = new CapacityWithDetails();
+            dto.idCapacity = c.idCapacity;
+            dto.character = c.character != null ? c.character.idCharacter : null;
+            dto.energyCost = c.energyCost;
+            dto.canBreak = c.canBreak;
+            dto.damageType = c.damageType != null ? c.damageType.idDamageType : null;
+            dto.type = c.type != null ? c.type.idCapacityType : null;
+            dto.isMultiTarget = c.isMultiTarget;
+            dto.gridPositionX = c.gridPositionX;
+            dto.gridPositionY = c.gridPositionY;
+            dto.lang = lang;
+            if (cd != null) {
+                dto.name = cd.name;
+                dto.effectPrimary = cd.effectPrimary;
+                dto.effectSecondary = cd.effectSecondary;
+                dto.bonusDescription = cd.bonusDescription;
+                dto.additionnalDescription = cd.additionnalDescription;
+            } else {
+                dto.name = "";
+                dto.effectPrimary = "";
+                dto.effectSecondary = "";
+                dto.bonusDescription = "";
+                dto.additionnalDescription = "";
             }
-            if (o.details == null || o.details.isEmpty()) {
-                var od = new com.opyruso.coh.entity.OutfitDetails();
-                od.idOutfit = o.idOutfit;
-                od.lang = lang;
-                od.name = "";
-                od.description = "";
-                o.details = new java.util.ArrayList<>(java.util.List.of(od));
-            }
-        });
+            return dto;
+        }).toList();
 
-        data.capacities.forEach(c -> {
-            if (c.details != null) {
-                c.details.removeIf(d -> !lang.equals(d.lang));
-            }
-            if (c.details == null || c.details.isEmpty()) {
-                var cd = new com.opyruso.coh.entity.CapacityDetails();
-                cd.idCapacity = c.idCapacity;
-                cd.lang = lang;
-                cd.name = "";
-                cd.effectPrimary = "";
-                cd.effectSecondary = "";
-                cd.bonusDescription = "";
-                cd.additionnalDescription = "";
-                c.details = new java.util.ArrayList<>(java.util.List.of(cd));
-            }
-        });
-
-        data.capacityTypes.forEach(ct -> {
-            if (ct.details != null) {
-                ct.details.removeIf(d -> !lang.equals(d.lang));
-            }
-            if (ct.details == null || ct.details.isEmpty()) {
-                var ctd = new com.opyruso.coh.entity.CapacityTypeDetails();
-                ctd.idCapacityType = ct.idCapacityType;
-                ctd.lang = lang;
-                ctd.name = "";
-                ct.details = new java.util.ArrayList<>(java.util.List.of(ctd));
-            }
-        });
+        var capacityTypeDetails = CapacityTypeDetails.find("lang", lang).list().stream()
+                .collect(java.util.stream.Collectors.toMap(d -> d.idCapacityType, d -> d));
+        data.capacityTypes = CapacityType.listAll().stream().map(ct -> {
+            CapacityTypeDetails ctd = (CapacityTypeDetails) capacityTypeDetails.get(ct.idCapacityType);
+            CapacityTypeWithDetails dto = new CapacityTypeWithDetails();
+            dto.idCapacityType = ct.idCapacityType;
+            dto.lang = lang;
+            dto.name = ctd != null ? ctd.name : "";
+            return dto;
+        }).toList();
 
         ObjectMapper mapper = new ObjectMapper();
         try {

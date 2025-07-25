@@ -12,6 +12,11 @@ public class WeaponRepository implements PanacheRepositoryBase<Weapon, Weapon.PK
     }
 
     public boolean deleteByIdWeapon(String idWeapon) {
-        return delete("idWeapon", idWeapon) > 0;
+        Weapon weapon = findByIdWeapon(idWeapon);
+        if (weapon == null) {
+            return false;
+        }
+        delete(weapon);
+        return true;
     }
 }

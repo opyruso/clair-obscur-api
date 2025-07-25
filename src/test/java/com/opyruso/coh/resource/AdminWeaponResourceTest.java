@@ -12,6 +12,7 @@ import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -27,6 +28,8 @@ public class AdminWeaponResourceTest {
     DamageTypeRepository damageTypeRepository;
     @Inject
     DamageBuffTypeRepository damageBuffTypeRepository;
+    @Inject
+    WeaponDetailsRepository weaponDetailsRepository;
 
     @BeforeEach
     void setUp() {
@@ -100,5 +103,17 @@ public class AdminWeaponResourceTest {
           .then()
           .statusCode(400)
           .body(is("Invalid damage type"));
+    }
+
+    @Test
+    @TestSecurity(roles = "admin")
+    public void deleteWeaponRemovesDetails() {
+        given()
+          .delete("/admin/weapons/w1")
+          .then()
+          .statusCode(204);
+
+        Assertions.assertEquals(0, weaponRepository.count());
+        Assertions.assertEquals(0, weaponDetailsRepository.count());
     }
 }

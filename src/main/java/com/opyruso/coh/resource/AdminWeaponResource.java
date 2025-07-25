@@ -59,6 +59,7 @@ public class AdminWeaponResource {
 
         WeaponDetails details = new WeaponDetails();
         details.idWeapon = payload.idWeapon;
+        details.idCharacter = character.idCharacter;
         details.lang = payload.lang;
         details.name = payload.name;
         details.region = payload.region;
@@ -116,11 +117,14 @@ public class AdminWeaponResource {
                 .orElseGet(() -> {
                     WeaponDetails d = new WeaponDetails();
                     d.idWeapon = id;
+                    d.idCharacter = character.idCharacter;
                     d.lang = payload.lang;
                     d.weapon = entity;
                     entity.details.add(d);
                     return d;
                 });
+
+        details.idCharacter = character.idCharacter;
 
         details.name = payload.name;
         details.region = payload.region;

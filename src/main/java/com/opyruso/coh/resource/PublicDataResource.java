@@ -140,6 +140,7 @@ public class PublicDataResource {
             if (w.details == null || w.details.isEmpty()) {
                 var wd = new com.opyruso.coh.entity.WeaponDetails();
                 wd.idWeapon = w.idWeapon;
+                wd.idCharacter = w.idCharacter;
                 wd.lang = lang;
                 wd.name = "";
                 wd.region = "";

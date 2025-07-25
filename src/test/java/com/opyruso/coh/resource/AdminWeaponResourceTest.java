@@ -56,6 +56,7 @@ public class AdminWeaponResourceTest {
 
         WeaponDetails wd = new WeaponDetails();
         wd.idWeapon = "w1";
+        wd.idCharacter = "c1";
         wd.lang = "en";
         wd.name = "name";
         wd.weapon = w;

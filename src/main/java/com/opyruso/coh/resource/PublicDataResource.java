@@ -57,7 +57,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (CharacterDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idCharacter, d -> d));
-        data.characters = Character.listAll().stream().map(c -> {
+        java.util.List<Character> characterEntities = Character.listAll();
+        data.characters = characterEntities.stream().map(c -> {
             CharacterDetails d = (CharacterDetails) characterDetails.get(c.idCharacter);
             CharacterWithDetails dto = new CharacterWithDetails();
             dto.idCharacter = c.idCharacter;
@@ -73,7 +74,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (DamageTypeDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idDamageType, d -> d));
-        data.damageTypes = DamageType.listAll().stream().map(dt -> {
+        java.util.List<DamageType> damageTypeEntities = DamageType.listAll();
+        data.damageTypes = damageTypeEntities.stream().map(dt -> {
             DamageTypeDetails dd = (DamageTypeDetails) damageTypeDetails.get(dt.idDamageType);
             DamageTypeWithDetails dto = new DamageTypeWithDetails();
             dto.idDamageType = dt.idDamageType;
@@ -88,7 +90,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (DamageBuffTypeDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idDamageBuffType, d -> d));
-        data.damageBuffTypes = DamageBuffType.listAll().stream().map(db -> {
+        java.util.List<DamageBuffType> damageBuffTypeEntities = DamageBuffType.listAll();
+        data.damageBuffTypes = damageBuffTypeEntities.stream().map(db -> {
             DamageBuffTypeDetails dd = (DamageBuffTypeDetails) damageBuffTypeDetails.get(db.idDamageBuffType);
             DamageBuffTypeWithDetails dto = new DamageBuffTypeWithDetails();
             dto.idDamageBuffType = db.idDamageBuffType;
@@ -103,7 +106,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (PictoDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idPicto, d -> d));
-        data.pictos = Picto.listAll().stream().map(p -> {
+        java.util.List<Picto> pictoEntities = Picto.listAll();
+        data.pictos = pictoEntities.stream().map(p -> {
             PictoDetails pd = (PictoDetails) pictoDetails.get(p.idPicto);
             PictoWithDetails dto = new PictoWithDetails();
             dto.idPicto = p.idPicto;
@@ -134,7 +138,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (WeaponDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idWeapon + "#" + d.idCharacter, d -> d));
-        data.weapons = Weapon.listAll().stream().map(w -> {
+        java.util.List<Weapon> weaponEntities = Weapon.listAll();
+        data.weapons = weaponEntities.stream().map(w -> {
             WeaponDetails wd = (WeaponDetails) weaponDetails.get(w.idWeapon + "#" + w.idCharacter);
             WeaponWithDetails dto = new WeaponWithDetails();
             dto.idWeapon = w.idWeapon;
@@ -167,7 +172,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (OutfitDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idOutfit, d -> d));
-        data.outfits = Outfit.listAll().stream().map(o -> {
+        java.util.List<Outfit> outfitEntities = Outfit.listAll();
+        data.outfits = outfitEntities.stream().map(o -> {
             OutfitDetails od = (OutfitDetails) outfitDetails.get(o.idOutfit);
             OutfitWithDetails dto = new OutfitWithDetails();
             dto.idOutfit = o.idOutfit;
@@ -184,7 +190,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (CapacityDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idCapacity, d -> d));
-        data.capacities = Capacity.listAll().stream().map(c -> {
+        java.util.List<Capacity> capacityEntities = Capacity.listAll();
+        data.capacities = capacityEntities.stream().map(c -> {
             CapacityDetails cd = (CapacityDetails) capacityDetails.get(c.idCapacity);
             CapacityWithDetails dto = new CapacityWithDetails();
             dto.idCapacity = c.idCapacity;
@@ -219,7 +226,8 @@ public class PublicDataResource {
                 .stream()
                 .map(e -> (CapacityTypeDetails) e)
                 .collect(java.util.stream.Collectors.toMap(d -> d.idCapacityType, d -> d));
-        data.capacityTypes = CapacityType.listAll().stream().map(ct -> {
+        java.util.List<CapacityType> capacityTypeEntities = CapacityType.listAll();
+        data.capacityTypes = capacityTypeEntities.stream().map(ct -> {
             CapacityTypeDetails ctd = (CapacityTypeDetails) capacityTypeDetails.get(ct.idCapacityType);
             CapacityTypeWithDetails dto = new CapacityTypeWithDetails();
             dto.idCapacityType = ct.idCapacityType;

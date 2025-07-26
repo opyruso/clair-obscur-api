@@ -83,6 +83,8 @@ public class AdminPictoResource {
         details.descrptionBonusLumina = payload.descrptionBonusLumina;
         details.unlockDescription = payload.unlockDescription;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

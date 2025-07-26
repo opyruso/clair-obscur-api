@@ -66,6 +66,8 @@ public class AdminCharacterResource {
         details.name = payload.name;
         details.story = payload.story;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

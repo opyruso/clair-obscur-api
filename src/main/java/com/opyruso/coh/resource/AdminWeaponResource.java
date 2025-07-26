@@ -133,6 +133,8 @@ public class AdminWeaponResource {
         details.weaponEffect2 = payload.weaponEffect2;
         details.weaponEffect3 = payload.weaponEffect3;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

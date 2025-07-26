@@ -49,16 +49,16 @@ public class AdminWeaponResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
         }
 
-        Weapon weapon = repository.findByIdWeapon(payload.idWeapon);
+        Weapon weapon = repository.findByIdWeaponAndCharacter(payload.idWeapon, payload.character);
         boolean isNew = false;
         if (weapon == null) {
             weapon = new Weapon();
             weapon.idWeapon = payload.idWeapon;
+            weapon.idCharacter = character.idCharacter;
+            weapon.character = character;
             repository.persist(weapon);
             isNew = true;
         }
-        weapon.idCharacter = character.idCharacter;
-        weapon.character = character;
         weapon.damageType = damageType;
         weapon.damageBuffType1 = damageBuffType1;
         weapon.damageBuffType2 = damageBuffType2;
@@ -93,19 +93,14 @@ public class AdminWeaponResource {
     @RolesAllowed("admin")
     @Transactional
     public Response update(@PathParam("id") String id, WeaponWithDetails payload) {
-        Weapon entity = repository.findByIdWeapon(id);
+        if (payload.character == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("character is required")
+                    .build();
+        }
+        Weapon entity = repository.findByIdWeaponAndCharacter(id, payload.character);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        Character character = entity.character;
-        if (payload.character != null) {
-            Character newCharacter = characterRepository.findById(payload.character);
-            if (newCharacter == null) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
-            }
-            entity.idCharacter = newCharacter.idCharacter;
-            entity.character = newCharacter;
         }
         final Character finalCharacter = entity.character;
 

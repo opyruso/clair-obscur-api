@@ -11,6 +11,10 @@ public class WeaponRepository implements PanacheRepositoryBase<Weapon, Weapon.PK
         return find("idWeapon", idWeapon).firstResult();
     }
 
+    public Weapon findByIdWeaponAndCharacter(String idWeapon, String idCharacter) {
+        return find("idWeapon = ?1 and idCharacter = ?2", idWeapon, idCharacter).firstResult();
+    }
+
     public boolean deleteByIdWeapon(String idWeapon) {
         Weapon weapon = findByIdWeapon(idWeapon);
         if (weapon == null) {

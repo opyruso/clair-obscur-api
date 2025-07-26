@@ -66,20 +66,27 @@ public class AdminCharacterResource {
         CharacterDetails details = entity.details.stream()
                 .filter(d -> d.lang.equals(payload.lang))
                 .findFirst()
-                .orElseGet(() -> {
-                    CharacterDetails d = new CharacterDetails();
-                    d.idCharacter = id;
-                    d.lang = payload.lang;
-                    d.character = entity;
-                    entity.details.add(d);
-                    return d;
-                });
+                .orElse(null);
+
+        boolean isNewDetails = false;
+        if (details == null) {
+            details = new CharacterDetails();
+            details.idCharacter = id;
+            details.lang = payload.lang;
+            details.character = entity;
+            entity.details.add(details);
+            isNewDetails = true;
+        }
 
         if (payload.name != null) {
             details.name = payload.name;
         }
         if (payload.story != null) {
             details.story = payload.story;
+        }
+
+        if (isNewDetails) {
+            repository.getEntityManager().persist(details);
         }
 
         repository.getEntityManager().flush();

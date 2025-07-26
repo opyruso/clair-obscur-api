@@ -49,17 +49,30 @@ public class AdminWeaponResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
         }
 
-        Weapon weapon = new Weapon();
-        weapon.idWeapon = payload.idWeapon;
-        weapon.idCharacter = character.idCharacter;
-        weapon.character = character;
-        weapon.damageType = damageType;
-        weapon.damageBuffType1 = damageBuffType1;
-        weapon.damageBuffType2 = damageBuffType2;
+        Weapon weapon = repository.findByIdWeapon(payload.idWeapon);
+        if (weapon == null) {
+            weapon = new Weapon();
+            weapon.idWeapon = payload.idWeapon;
+            weapon.idCharacter = character.idCharacter;
+            weapon.character = character;
+            weapon.damageType = damageType;
+            weapon.damageBuffType1 = damageBuffType1;
+            weapon.damageBuffType2 = damageBuffType2;
+            weapon.details = new java.util.ArrayList<>();
+            repository.persist(weapon);
+        }
+        if (weapon.details == null) {
+            weapon.details = new java.util.ArrayList<>();
+        }
+        boolean exists = weapon.details.stream()
+                .anyMatch(d -> d.lang.equals(payload.lang));
+        if (exists) {
+            return Response.status(Response.Status.CONFLICT).entity("Details already exist").build();
+        }
 
         WeaponDetails details = new WeaponDetails();
         details.idWeapon = payload.idWeapon;
-        details.idCharacter = character.idCharacter;
+        details.idCharacter = weapon.idCharacter;
         details.lang = payload.lang;
         details.name = payload.name;
         details.region = payload.region;
@@ -69,9 +82,10 @@ public class AdminWeaponResource {
         details.weaponEffect3 = payload.weaponEffect3;
         details.weapon = weapon;
 
-        weapon.details = new java.util.ArrayList<>(java.util.List.of(details));
+        weapon.details.add(details);
+        repository.getEntityManager().persist(details);
+        repository.getEntityManager().flush();
 
-        repository.persist(weapon);
         return Response.status(Response.Status.CREATED).entity(weapon).build();
     }
 
@@ -85,28 +99,39 @@ public class AdminWeaponResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        Character character = characterRepository.findById(payload.character);
-        if (character == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
-        }
-        DamageType damageType = payload.damageType == null ? null : damageTypeRepository.findById(payload.damageType);
-        if (payload.damageType != null && damageType == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage type").build();
-        }
-        DamageBuffType damageBuffType1 = payload.damageBuffType1 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType1);
-        if (payload.damageBuffType1 != null && damageBuffType1 == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 1").build();
-        }
-        DamageBuffType damageBuffType2 = payload.damageBuffType2 == null ? null : damageBuffTypeRepository.findById(payload.damageBuffType2);
-        if (payload.damageBuffType2 != null && damageBuffType2 == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
+        Character character = null;
+        if (payload.character != null) {
+            character = characterRepository.findById(payload.character);
+            if (character == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
+            }
+            entity.idCharacter = character.idCharacter;
+            entity.character = character;
         }
 
-        entity.idCharacter = character.idCharacter;
-        entity.character = character;
-        entity.damageType = damageType;
-        entity.damageBuffType1 = damageBuffType1;
-        entity.damageBuffType2 = damageBuffType2;
+        if (payload.damageType != null) {
+            DamageType damageType = damageTypeRepository.findById(payload.damageType);
+            if (damageType == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage type").build();
+            }
+            entity.damageType = damageType;
+        }
+
+        if (payload.damageBuffType1 != null) {
+            DamageBuffType damageBuffType1 = damageBuffTypeRepository.findById(payload.damageBuffType1);
+            if (damageBuffType1 == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 1").build();
+            }
+            entity.damageBuffType1 = damageBuffType1;
+        }
+
+        if (payload.damageBuffType2 != null) {
+            DamageBuffType damageBuffType2 = damageBuffTypeRepository.findById(payload.damageBuffType2);
+            if (damageBuffType2 == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
+            }
+            entity.damageBuffType2 = damageBuffType2;
+        }
 
         if (entity.details == null) {
             entity.details = new java.util.ArrayList<>();
@@ -124,14 +149,28 @@ public class AdminWeaponResource {
                     return d;
                 });
 
-        details.idCharacter = character.idCharacter;
+        if (character != null) {
+            details.idCharacter = character.idCharacter;
+        }
 
-        details.name = payload.name;
-        details.region = payload.region;
-        details.unlockDescription = payload.unlockDescription;
-        details.weaponEffect1 = payload.weaponEffect1;
-        details.weaponEffect2 = payload.weaponEffect2;
-        details.weaponEffect3 = payload.weaponEffect3;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
+        if (payload.region != null) {
+            details.region = payload.region;
+        }
+        if (payload.unlockDescription != null) {
+            details.unlockDescription = payload.unlockDescription;
+        }
+        if (payload.weaponEffect1 != null) {
+            details.weaponEffect1 = payload.weaponEffect1;
+        }
+        if (payload.weaponEffect2 != null) {
+            details.weaponEffect2 = payload.weaponEffect2;
+        }
+        if (payload.weaponEffect3 != null) {
+            details.weaponEffect3 = payload.weaponEffect3;
+        }
 
         repository.getEntityManager().flush();
 
@@ -139,14 +178,30 @@ public class AdminWeaponResource {
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("{id}/{lang}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteByIdWeapon(id);
-        if (!deleted) {
+    public Response delete(@PathParam("id") String id, @PathParam("lang") String lang) {
+        Weapon entity = repository.findByIdWeapon(id);
+        if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        if (entity.details == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        WeaponDetails detail = entity.details.stream()
+                .filter(d -> d.lang.equals(lang))
+                .findFirst()
+                .orElse(null);
+        if (detail == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        entity.details.remove(detail);
+        repository.getEntityManager().remove(detail);
+        if (entity.details.isEmpty()) {
+            repository.delete(entity);
+        }
+        repository.getEntityManager().flush();
         return Response.noContent().build();
     }
 }

@@ -109,7 +109,7 @@ public class AdminWeaponResourceTest {
     @TestSecurity(roles = "admin")
     public void deleteWeaponRemovesDetails() {
         given()
-          .delete("/admin/weapons/w1")
+          .delete("/admin/weapons/w1/en")
           .then()
           .statusCode(204);
 

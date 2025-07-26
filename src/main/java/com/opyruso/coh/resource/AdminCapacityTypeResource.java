@@ -23,8 +23,21 @@ public class AdminCapacityTypeResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(CapacityTypeWithDetails payload) {
-        CapacityType type = new CapacityType();
-        type.idCapacityType = payload.idCapacityType;
+        CapacityType type = repository.findById(payload.idCapacityType);
+        if (type == null) {
+            type = new CapacityType();
+            type.idCapacityType = payload.idCapacityType;
+            type.details = new java.util.ArrayList<>();
+            repository.persist(type);
+        }
+        if (type.details == null) {
+            type.details = new java.util.ArrayList<>();
+        }
+        boolean exists = type.details.stream()
+                .anyMatch(d -> d.lang.equals(payload.lang));
+        if (exists) {
+            return Response.status(Response.Status.CONFLICT).entity("Details already exist").build();
+        }
 
         CapacityTypeDetails details = new CapacityTypeDetails();
         details.idCapacityType = payload.idCapacityType;
@@ -32,9 +45,10 @@ public class AdminCapacityTypeResource {
         details.name = payload.name;
         details.capacityType = type;
 
-        type.details = new java.util.ArrayList<>(java.util.List.of(details));
+        type.details.add(details);
+        repository.getEntityManager().persist(details);
+        repository.getEntityManager().flush();
 
-        repository.persist(type);
         return Response.status(Response.Status.CREATED).entity(type).build();
     }
 
@@ -62,7 +76,9 @@ public class AdminCapacityTypeResource {
                     return d;
                 });
 
-        details.name = payload.name;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
 
         repository.getEntityManager().flush();
 
@@ -70,14 +86,30 @@ public class AdminCapacityTypeResource {
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("{id}/{lang}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) {
+    public Response delete(@PathParam("id") String id, @PathParam("lang") String lang) {
+        CapacityType entity = repository.findById(id);
+        if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        if (entity.details == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        CapacityTypeDetails detail = entity.details.stream()
+                .filter(d -> d.lang.equals(lang))
+                .findFirst()
+                .orElse(null);
+        if (detail == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        entity.details.remove(detail);
+        repository.getEntityManager().remove(detail);
+        if (entity.details.isEmpty()) {
+            repository.delete(entity);
+        }
+        repository.getEntityManager().flush();
         return Response.noContent().build();
     }
 }

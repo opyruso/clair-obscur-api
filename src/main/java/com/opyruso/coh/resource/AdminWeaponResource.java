@@ -93,18 +93,16 @@ public class AdminWeaponResource {
     @RolesAllowed("admin")
     @Transactional
     public Response update(@PathParam("id") String id, WeaponWithDetails payload) {
-        Weapon entity = repository.findByIdWeapon(id);
+        if (payload.character == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("character is required")
+                    .build();
+        }
+        Weapon entity = repository.findByIdWeaponAndCharacter(id, payload.character);
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        Character character = entity.character;
-        if (payload.character != null && !payload.character.equals(character.idCharacter)) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Changing the character of a weapon is not supported")
-                    .build();
-        }
-        final Character finalCharacter = character;
+        final Character finalCharacter = entity.character;
 
         if (payload.damageType != null) {
             DamageType damageType = damageTypeRepository.findById(payload.damageType);

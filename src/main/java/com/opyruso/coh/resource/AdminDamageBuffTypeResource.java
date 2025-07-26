@@ -23,8 +23,21 @@ public class AdminDamageBuffTypeResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(DamageBuffTypeWithDetails payload) {
-        DamageBuffType damageBuffType = new DamageBuffType();
-        damageBuffType.idDamageBuffType = payload.idDamageBuffType;
+        DamageBuffType damageBuffType = repository.findById(payload.idDamageBuffType);
+        if (damageBuffType == null) {
+            damageBuffType = new DamageBuffType();
+            damageBuffType.idDamageBuffType = payload.idDamageBuffType;
+            damageBuffType.details = new java.util.ArrayList<>();
+            repository.persist(damageBuffType);
+        }
+        if (damageBuffType.details == null) {
+            damageBuffType.details = new java.util.ArrayList<>();
+        }
+        boolean exists = damageBuffType.details.stream()
+                .anyMatch(d -> d.lang.equals(payload.lang));
+        if (exists) {
+            return Response.status(Response.Status.CONFLICT).entity("Details already exist").build();
+        }
 
         DamageBuffTypeDetails details = new DamageBuffTypeDetails();
         details.idDamageBuffType = payload.idDamageBuffType;
@@ -32,9 +45,10 @@ public class AdminDamageBuffTypeResource {
         details.name = payload.name;
         details.damageBuffType = damageBuffType;
 
-        damageBuffType.details = new java.util.ArrayList<>(java.util.List.of(details));
+        damageBuffType.details.add(details);
+        repository.getEntityManager().persist(details);
+        repository.getEntityManager().flush();
 
-        repository.persist(damageBuffType);
         return Response.status(Response.Status.CREATED).entity(damageBuffType).build();
     }
 
@@ -62,7 +76,9 @@ public class AdminDamageBuffTypeResource {
                     return d;
                 });
 
-        details.name = payload.name;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
 
         repository.getEntityManager().flush();
 
@@ -70,14 +86,30 @@ public class AdminDamageBuffTypeResource {
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("{id}/{lang}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) {
+    public Response delete(@PathParam("id") String id, @PathParam("lang") String lang) {
+        DamageBuffType entity = repository.findById(id);
+        if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        if (entity.details == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        DamageBuffTypeDetails detail = entity.details.stream()
+                .filter(d -> d.lang.equals(lang))
+                .findFirst()
+                .orElse(null);
+        if (detail == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        entity.details.remove(detail);
+        repository.getEntityManager().remove(detail);
+        if (entity.details.isEmpty()) {
+            repository.delete(entity);
+        }
+        repository.getEntityManager().flush();
         return Response.noContent().build();
     }
 }

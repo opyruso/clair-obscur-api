@@ -143,6 +143,23 @@ public class AdminCapacityResource {
             entity.gridPositionY = payload.gridPositionY;
         }
 
+        boolean hasDetailsPayload =
+                payload.name != null ||
+                payload.effectPrimary != null ||
+                payload.effectSecondary != null ||
+                payload.bonusDescription != null ||
+                payload.additionnalDescription != null;
+
+        if (payload.lang == null) {
+            if (hasDetailsPayload) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("lang is required when updating details")
+                        .build();
+            }
+            repository.getEntityManager().flush();
+            return Response.ok(entity).build();
+        }
+
         if (entity.details == null) {
             entity.details = new java.util.ArrayList<>();
         }
@@ -158,11 +175,21 @@ public class AdminCapacityResource {
                     return d;
                 });
 
-        details.name = payload.name;
-        details.effectPrimary = payload.effectPrimary;
-        details.effectSecondary = payload.effectSecondary;
-        details.bonusDescription = payload.bonusDescription;
-        details.additionnalDescription = payload.additionnalDescription;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
+        if (payload.effectPrimary != null) {
+            details.effectPrimary = payload.effectPrimary;
+        }
+        if (payload.effectSecondary != null) {
+            details.effectSecondary = payload.effectSecondary;
+        }
+        if (payload.bonusDescription != null) {
+            details.bonusDescription = payload.bonusDescription;
+        }
+        if (payload.additionnalDescription != null) {
+            details.additionnalDescription = payload.additionnalDescription;
+        }
 
         repository.getEntityManager().flush();
 

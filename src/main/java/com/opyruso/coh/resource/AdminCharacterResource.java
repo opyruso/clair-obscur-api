@@ -23,8 +23,17 @@ public class AdminCharacterResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(CharacterWithDetails payload) {
-        Character character = new Character();
-        character.idCharacter = payload.idCharacter;
+        Character character = repository.findById(payload.idCharacter);
+        boolean isNew = false;
+        if (character == null) {
+            character = new Character();
+            character.idCharacter = payload.idCharacter;
+            repository.persist(character);
+            isNew = true;
+        }
+        if (character.details == null) {
+            character.details = new java.util.ArrayList<>();
+        }
 
         CharacterDetails details = new CharacterDetails();
         details.idCharacter = payload.idCharacter;
@@ -33,9 +42,12 @@ public class AdminCharacterResource {
         details.story = payload.story;
         details.character = character;
 
-        character.details = new java.util.ArrayList<>(java.util.List.of(details));
+        character.details.add(details);
+        if (!isNew) {
+            repository.getEntityManager().persist(details);
+        }
 
-        repository.persist(character);
+        repository.getEntityManager().flush();
         return Response.status(Response.Status.CREATED).entity(character).build();
     }
 
@@ -63,8 +75,12 @@ public class AdminCharacterResource {
                     return d;
                 });
 
-        details.name = payload.name;
-        details.story = payload.story;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
+        if (payload.story != null) {
+            details.story = payload.story;
+        }
 
         repository.getEntityManager().flush();
 
@@ -75,10 +91,26 @@ public class AdminCharacterResource {
     @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) {
+    public Response delete(@PathParam("id") String id, @QueryParam("lang") String lang) {
+        Character entity = repository.findById(id);
+        if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (lang != null) {
+            if (entity.details != null) {
+                CharacterDetails details = entity.details.stream()
+                        .filter(d -> d.lang.equals(lang))
+                        .findFirst().orElse(null);
+                if (details != null) {
+                    entity.details.remove(details);
+                    repository.getEntityManager().remove(details);
+                }
+            }
+            if (entity.details == null || entity.details.isEmpty()) {
+                repository.delete(entity);
+            }
+        } else {
+            repository.delete(entity);
         }
         return Response.noContent().build();
     }

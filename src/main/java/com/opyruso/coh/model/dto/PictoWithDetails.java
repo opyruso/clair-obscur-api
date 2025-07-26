@@ -2,12 +2,12 @@ package com.opyruso.coh.model.dto;
 
 public class PictoWithDetails {
     public String idPicto;
-    public int level;
-    public int bonusDefense;
-    public int bonusSpeed;
-    public int bonusCritChance;
-    public int bonusHealth;
-    public int luminaCost;
+    public Integer level;
+    public Integer bonusDefense;
+    public Integer bonusSpeed;
+    public Integer bonusCritChance;
+    public Integer bonusHealth;
+    public Integer luminaCost;
     public String lang;
     public String name;
     public String region;

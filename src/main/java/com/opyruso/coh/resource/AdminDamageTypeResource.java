@@ -23,8 +23,18 @@ public class AdminDamageTypeResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(DamageTypeWithDetails payload) {
-        DamageType damageType = new DamageType();
-        damageType.idDamageType = payload.idDamageType;
+        DamageType damageType = repository.findById(payload.idDamageType);
+        boolean isNew = false;
+        if (damageType == null) {
+            damageType = new DamageType();
+            damageType.idDamageType = payload.idDamageType;
+            repository.persist(damageType);
+            isNew = true;
+        }
+
+        if (damageType.details == null) {
+            damageType.details = new java.util.ArrayList<>();
+        }
 
         DamageTypeDetails details = new DamageTypeDetails();
         details.idDamageType = payload.idDamageType;
@@ -32,9 +42,12 @@ public class AdminDamageTypeResource {
         details.name = payload.name;
         details.damageType = damageType;
 
-        damageType.details = new java.util.ArrayList<>(java.util.List.of(details));
+        damageType.details.add(details);
+        if (!isNew) {
+            repository.getEntityManager().persist(details);
+        }
 
-        repository.persist(damageType);
+        repository.getEntityManager().flush();
         return Response.status(Response.Status.CREATED).entity(damageType).build();
     }
 
@@ -62,7 +75,9 @@ public class AdminDamageTypeResource {
                     return d;
                 });
 
-        details.name = payload.name;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
 
         repository.getEntityManager().flush();
 
@@ -73,10 +88,26 @@ public class AdminDamageTypeResource {
     @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) {
+    public Response delete(@PathParam("id") String id, @QueryParam("lang") String lang) {
+        DamageType entity = repository.findById(id);
+        if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (lang != null) {
+            if (entity.details != null) {
+                DamageTypeDetails details = entity.details.stream()
+                        .filter(d -> d.lang.equals(lang))
+                        .findFirst().orElse(null);
+                if (details != null) {
+                    entity.details.remove(details);
+                    repository.getEntityManager().remove(details);
+                }
+            }
+            if (entity.details == null || entity.details.isEmpty()) {
+                repository.delete(entity);
+            }
+        } else {
+            repository.delete(entity);
         }
         return Response.noContent().build();
     }

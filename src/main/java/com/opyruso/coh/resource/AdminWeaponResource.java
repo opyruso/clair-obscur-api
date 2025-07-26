@@ -49,16 +49,16 @@ public class AdminWeaponResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid damage buff type 2").build();
         }
 
-        Weapon weapon = repository.findByIdWeapon(payload.idWeapon);
+        Weapon weapon = repository.findByIdWeaponAndCharacter(payload.idWeapon, payload.character);
         boolean isNew = false;
         if (weapon == null) {
             weapon = new Weapon();
             weapon.idWeapon = payload.idWeapon;
+            weapon.idCharacter = character.idCharacter;
+            weapon.character = character;
             repository.persist(weapon);
             isNew = true;
         }
-        weapon.idCharacter = character.idCharacter;
-        weapon.character = character;
         weapon.damageType = damageType;
         weapon.damageBuffType1 = damageBuffType1;
         weapon.damageBuffType2 = damageBuffType2;

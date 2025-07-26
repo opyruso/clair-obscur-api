@@ -100,13 +100,14 @@ public class AdminWeaponResource {
 
         Character character = entity.character;
         if (payload.character != null) {
-            character = characterRepository.findById(payload.character);
-            if (character == null) {
+            Character newCharacter = characterRepository.findById(payload.character);
+            if (newCharacter == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
             }
-            entity.idCharacter = character.idCharacter;
-            entity.character = character;
+            entity.idCharacter = newCharacter.idCharacter;
+            entity.character = newCharacter;
         }
+        final Character finalCharacter = entity.character;
 
         if (payload.damageType != null) {
             DamageType damageType = damageTypeRepository.findById(payload.damageType);
@@ -141,14 +142,14 @@ public class AdminWeaponResource {
                 .orElseGet(() -> {
                     WeaponDetails d = new WeaponDetails();
                     d.idWeapon = id;
-                    d.idCharacter = character.idCharacter;
+                    d.idCharacter = finalCharacter.idCharacter;
                     d.lang = payload.lang;
                     d.weapon = entity;
                     entity.details.add(d);
                     return d;
                 });
 
-        details.idCharacter = character.idCharacter;
+        details.idCharacter = finalCharacter.idCharacter;
 
         if (payload.name != null) {
             details.name = payload.name;

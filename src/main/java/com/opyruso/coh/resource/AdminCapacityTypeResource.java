@@ -64,6 +64,8 @@ public class AdminCapacityTypeResource {
 
         details.name = payload.name;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

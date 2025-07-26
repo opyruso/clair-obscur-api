@@ -64,6 +64,8 @@ public class AdminDamageTypeResource {
 
         details.name = payload.name;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

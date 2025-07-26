@@ -70,6 +70,8 @@ public class AdminOutfitResource {
         details.name = payload.name;
         details.description = payload.description;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

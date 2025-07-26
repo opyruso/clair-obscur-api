@@ -125,6 +125,8 @@ public class AdminCapacityResource {
         details.bonusDescription = payload.bonusDescription;
         details.additionnalDescription = payload.additionnalDescription;
 
+        repository.getEntityManager().flush();
+
         return Response.ok(entity).build();
     }
 

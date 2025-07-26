@@ -24,9 +24,19 @@ public class AdminOutfitResource {
     @RolesAllowed("admin")
     @Transactional
     public Response create(OutfitWithDetails payload) {
-        Outfit outfit = new Outfit();
-        outfit.idOutfit = payload.idOutfit;
+        Outfit outfit = repository.findById(payload.idOutfit);
+        boolean isNew = false;
+        if (outfit == null) {
+            outfit = new Outfit();
+            outfit.idOutfit = payload.idOutfit;
+            repository.persist(outfit);
+            isNew = true;
+        }
         outfit.character = characterRepository.findById(payload.character);
+
+        if (outfit.details == null) {
+            outfit.details = new java.util.ArrayList<>();
+        }
 
         OutfitDetails details = new OutfitDetails();
         details.idOutfit = payload.idOutfit;
@@ -35,9 +45,12 @@ public class AdminOutfitResource {
         details.description = payload.description;
         details.outfit = outfit;
 
-        outfit.details = new java.util.ArrayList<>(java.util.List.of(details));
+        outfit.details.add(details);
+        if (!isNew) {
+            repository.getEntityManager().persist(details);
+        }
 
-        repository.persist(outfit);
+        repository.getEntityManager().flush();
         return Response.status(Response.Status.CREATED).entity(outfit).build();
     }
 
@@ -50,7 +63,9 @@ public class AdminOutfitResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.character = characterRepository.findById(payload.character);
+        if (payload.character != null) {
+            entity.character = characterRepository.findById(payload.character);
+        }
 
         if (entity.details == null) {
             entity.details = new java.util.ArrayList<>();
@@ -67,8 +82,12 @@ public class AdminOutfitResource {
                     return d;
                 });
 
-        details.name = payload.name;
-        details.description = payload.description;
+        if (payload.name != null) {
+            details.name = payload.name;
+        }
+        if (payload.description != null) {
+            details.description = payload.description;
+        }
 
         repository.getEntityManager().flush();
 
@@ -79,10 +98,26 @@ public class AdminOutfitResource {
     @Path("{id}")
     @RolesAllowed("admin")
     @Transactional
-    public Response delete(@PathParam("id") String id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) {
+    public Response delete(@PathParam("id") String id, @QueryParam("lang") String lang) {
+        Outfit entity = repository.findById(id);
+        if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (lang != null) {
+            if (entity.details != null) {
+                OutfitDetails details = entity.details.stream()
+                        .filter(d -> d.lang.equals(lang))
+                        .findFirst().orElse(null);
+                if (details != null) {
+                    entity.details.remove(details);
+                    repository.getEntityManager().remove(details);
+                }
+            }
+            if (entity.details == null || entity.details.isEmpty()) {
+                repository.delete(entity);
+            }
+        } else {
+            repository.delete(entity);
         }
         return Response.noContent().build();
     }

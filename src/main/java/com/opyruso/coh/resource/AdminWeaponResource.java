@@ -99,15 +99,12 @@ public class AdminWeaponResource {
         }
 
         Character character = entity.character;
-        if (payload.character != null) {
-            Character newCharacter = characterRepository.findById(payload.character);
-            if (newCharacter == null) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid character").build();
-            }
-            entity.idCharacter = newCharacter.idCharacter;
-            entity.character = newCharacter;
+        if (payload.character != null && !payload.character.equals(character.idCharacter)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Changing the character of a weapon is not supported")
+                    .build();
         }
-        final Character finalCharacter = entity.character;
+        final Character finalCharacter = character;
 
         if (payload.damageType != null) {
             DamageType damageType = damageTypeRepository.findById(payload.damageType);

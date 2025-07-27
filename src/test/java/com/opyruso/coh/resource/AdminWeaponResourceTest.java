@@ -56,12 +56,12 @@ public class AdminWeaponResourceTest {
         w.character = c;
         w.damageType = dt;
         w.damageBuffType1 = db;
+        w.name = "name";
 
         WeaponDetails wd = new WeaponDetails();
         wd.idWeapon = "w1";
         wd.idCharacter = "c1";
         wd.lang = "en";
-        wd.name = "name";
         wd.weapon = w;
 
         w.details = new java.util.ArrayList<>(java.util.List.of(wd));

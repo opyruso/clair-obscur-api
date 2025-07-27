@@ -62,6 +62,16 @@ public class AdminCapacityResource {
         capacity.gridPositionX = payload.gridPositionX;
         capacity.gridPositionY = payload.gridPositionY;
 
+        if (payload.name != null) {
+            capacity.name = payload.name;
+        }
+        if (payload.effectPrimary != null) {
+            capacity.effectPrimary = payload.effectPrimary;
+        }
+        if (payload.effectSecondary != null) {
+            capacity.effectSecondary = payload.effectSecondary;
+        }
+
         if (capacity.details == null) {
             capacity.details = new java.util.ArrayList<>();
         }
@@ -69,15 +79,6 @@ public class AdminCapacityResource {
         CapacityDetails details = new CapacityDetails();
         details.idCapacity = payload.idCapacity;
         details.lang = payload.lang;
-        if (payload.name != null) {
-            details.name = payload.name;
-        }
-        if (payload.effectPrimary != null) {
-            details.effectPrimary = payload.effectPrimary;
-        }
-        if (payload.effectSecondary != null) {
-            details.effectSecondary = payload.effectSecondary;
-        }
         if (payload.bonusDescription != null) {
             details.bonusDescription = payload.bonusDescription;
         }
@@ -144,11 +145,18 @@ public class AdminCapacityResource {
         }
 
         boolean hasDetailsPayload =
-                payload.name != null ||
-                payload.effectPrimary != null ||
-                payload.effectSecondary != null ||
                 payload.bonusDescription != null ||
                 payload.additionnalDescription != null;
+
+        if (payload.name != null) {
+            entity.name = payload.name;
+        }
+        if (payload.effectPrimary != null) {
+            entity.effectPrimary = payload.effectPrimary;
+        }
+        if (payload.effectSecondary != null) {
+            entity.effectSecondary = payload.effectSecondary;
+        }
 
         if (payload.lang == null) {
             if (hasDetailsPayload) {
@@ -175,15 +183,6 @@ public class AdminCapacityResource {
                     return d;
                 });
 
-        if (payload.name != null) {
-            details.name = payload.name;
-        }
-        if (payload.effectPrimary != null) {
-            details.effectPrimary = payload.effectPrimary;
-        }
-        if (payload.effectSecondary != null) {
-            details.effectSecondary = payload.effectSecondary;
-        }
         if (payload.bonusDescription != null) {
             details.bonusDescription = payload.bonusDescription;
         }

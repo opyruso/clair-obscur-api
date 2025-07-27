@@ -32,19 +32,8 @@ public class AdminCapacityTypeResource {
             isNew = true;
         }
 
-        if (type.details == null) {
-            type.details = new java.util.ArrayList<>();
-        }
-
-        CapacityTypeDetails details = new CapacityTypeDetails();
-        details.idCapacityType = payload.idCapacityType;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.capacityType = type;
-
-        type.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+        if (payload.name != null) {
+            type.name = payload.name;
         }
 
         repository.getEntityManager().flush();
@@ -60,23 +49,8 @@ public class AdminCapacityTypeResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        CapacityTypeDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElseGet(() -> {
-                    CapacityTypeDetails d = new CapacityTypeDetails();
-                    d.idCapacityType = id;
-                    d.lang = payload.lang;
-                    d.capacityType = entity;
-                    entity.details.add(d);
-                    return d;
-                });
-
         if (payload.name != null) {
-            details.name = payload.name;
+            entity.name = payload.name;
         }
 
         repository.getEntityManager().flush();

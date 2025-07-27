@@ -31,20 +31,23 @@ public class AdminCharacterResource {
             repository.persist(character);
             isNew = true;
         }
-        if (character.details == null) {
-            character.details = new java.util.ArrayList<>();
+        if (payload.name != null) {
+            character.name = payload.name;
         }
 
-        CharacterDetails details = new CharacterDetails();
-        details.idCharacter = payload.idCharacter;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.story = payload.story;
-        details.character = character;
-
-        character.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+        if (payload.story != null) {
+            if (character.details == null) {
+                character.details = new java.util.ArrayList<>();
+            }
+            CharacterDetails details = new CharacterDetails();
+            details.idCharacter = payload.idCharacter;
+            details.lang = payload.lang;
+            details.story = payload.story;
+            details.character = character;
+            character.details.add(details);
+            if (!isNew) {
+                repository.getEntityManager().persist(details);
+            }
         }
 
         repository.getEntityManager().flush();
@@ -60,33 +63,31 @@ public class AdminCharacterResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        CharacterDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElse(null);
-
-        boolean isNewDetails = false;
-        if (details == null) {
-            details = new CharacterDetails();
-            details.idCharacter = id;
-            details.lang = payload.lang;
-            details.character = entity;
-            entity.details.add(details);
-            isNewDetails = true;
-        }
-
         if (payload.name != null) {
-            details.name = payload.name;
-        }
-        if (payload.story != null) {
-            details.story = payload.story;
+            entity.name = payload.name;
         }
 
-        if (isNewDetails) {
-            repository.getEntityManager().persist(details);
+        if (payload.story != null) {
+            if (payload.lang == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("lang is required when updating story")
+                        .build();
+            }
+            if (entity.details == null) {
+                entity.details = new java.util.ArrayList<>();
+            }
+            CharacterDetails details = entity.details.stream()
+                    .filter(d -> d.lang.equals(payload.lang))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        CharacterDetails d = new CharacterDetails();
+                        d.idCharacter = id;
+                        d.lang = payload.lang;
+                        d.character = entity;
+                        entity.details.add(d);
+                        return d;
+                    });
+            details.story = payload.story;
         }
 
         repository.getEntityManager().flush();

@@ -18,14 +18,6 @@ public class CapacityDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
-
-    @Column(name = "effect_primary")
-    public String effectPrimary;
-
-    @Column(name = "effect_secondary")
-    public String effectSecondary;
 
     @Column(name = "bonus_description")
     public String bonusDescription;

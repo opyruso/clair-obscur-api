@@ -33,6 +33,18 @@ public class Weapon extends PanacheEntityBase {
     @JoinColumn(name = "id_damage_buff_type_2")
     public DamageBuffType damageBuffType2;
 
+    @Column(name = "name")
+    public String name;
+
+    @Column(name = "weapon_effect_1")
+    public String weaponEffect1;
+
+    @Column(name = "weapon_effect_2")
+    public String weaponEffect2;
+
+    @Column(name = "weapon_effect_3")
+    public String weaponEffect3;
+
     @OneToMany(mappedBy = "weapon", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     public List<WeaponDetails> details;

@@ -18,8 +18,6 @@ public class DamageBuffTypeDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
 
     @ManyToOne
     @JoinColumn(name = "id_damage_buff_type", insertable = false, updatable = false)

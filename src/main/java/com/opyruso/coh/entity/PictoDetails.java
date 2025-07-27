@@ -18,14 +18,8 @@ public class PictoDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
-
     @Column(name = "region")
     public String region;
-
-    @Column(name = "descrption_bonus_lumina")
-    public String descrptionBonusLumina;
 
     @Column(name = "unlock_description")
     public String unlockDescription;

@@ -32,19 +32,8 @@ public class AdminDamageTypeResource {
             isNew = true;
         }
 
-        if (damageType.details == null) {
-            damageType.details = new java.util.ArrayList<>();
-        }
-
-        DamageTypeDetails details = new DamageTypeDetails();
-        details.idDamageType = payload.idDamageType;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.damageType = damageType;
-
-        damageType.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+        if (payload.name != null) {
+            damageType.name = payload.name;
         }
 
         repository.getEntityManager().flush();
@@ -60,23 +49,8 @@ public class AdminDamageTypeResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        DamageTypeDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElseGet(() -> {
-                    DamageTypeDetails d = new DamageTypeDetails();
-                    d.idDamageType = id;
-                    d.lang = payload.lang;
-                    d.damageType = entity;
-                    entity.details.add(d);
-                    return d;
-                });
-
         if (payload.name != null) {
-            details.name = payload.name;
+            entity.name = payload.name;
         }
 
         repository.getEntityManager().flush();

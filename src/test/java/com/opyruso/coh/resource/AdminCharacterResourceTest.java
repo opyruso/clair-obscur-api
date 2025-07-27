@@ -29,7 +29,7 @@ public class AdminCharacterResourceTest {
         CharacterDetails cd = new CharacterDetails();
         cd.idCharacter = "c1";
         cd.lang = "en";
-        cd.name = "name";
+        cd.story = "story";
         cd.character = c;
 
         c.details = new java.util.ArrayList<>(java.util.List.of(cd));

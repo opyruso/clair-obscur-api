@@ -33,21 +33,23 @@ public class AdminOutfitResource {
             isNew = true;
         }
         outfit.character = characterRepository.findById(payload.character);
-
-        if (outfit.details == null) {
-            outfit.details = new java.util.ArrayList<>();
+        if (payload.name != null) {
+            outfit.name = payload.name;
         }
 
-        OutfitDetails details = new OutfitDetails();
-        details.idOutfit = payload.idOutfit;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.description = payload.description;
-        details.outfit = outfit;
-
-        outfit.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+        if (payload.description != null) {
+            if (outfit.details == null) {
+                outfit.details = new java.util.ArrayList<>();
+            }
+            OutfitDetails details = new OutfitDetails();
+            details.idOutfit = payload.idOutfit;
+            details.lang = payload.lang;
+            details.description = payload.description;
+            details.outfit = outfit;
+            outfit.details.add(details);
+            if (!isNew) {
+                repository.getEntityManager().persist(details);
+            }
         }
 
         repository.getEntityManager().flush();
@@ -67,25 +69,29 @@ public class AdminOutfitResource {
             entity.character = characterRepository.findById(payload.character);
         }
 
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        OutfitDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElseGet(() -> {
-                    OutfitDetails d = new OutfitDetails();
-                    d.idOutfit = id;
-                    d.lang = payload.lang;
-                    d.outfit = entity;
-                    entity.details.add(d);
-                    return d;
-                });
-
         if (payload.name != null) {
-            details.name = payload.name;
+            entity.name = payload.name;
         }
         if (payload.description != null) {
+            if (payload.lang == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("lang is required when updating description")
+                        .build();
+            }
+            if (entity.details == null) {
+                entity.details = new java.util.ArrayList<>();
+            }
+            OutfitDetails details = entity.details.stream()
+                    .filter(d -> d.lang.equals(payload.lang))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        OutfitDetails d = new OutfitDetails();
+                        d.idOutfit = id;
+                        d.lang = payload.lang;
+                        d.outfit = entity;
+                        entity.details.add(d);
+                        return d;
+                    });
             details.description = payload.description;
         }
 

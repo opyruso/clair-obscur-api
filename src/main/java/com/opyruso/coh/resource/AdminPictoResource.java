@@ -50,22 +50,29 @@ public class AdminPictoResource {
             picto.luminaCost = payload.luminaCost;
         }
 
-        if (picto.details == null) {
-            picto.details = new java.util.ArrayList<>();
+        if (payload.name != null) {
+            picto.name = payload.name;
+        }
+        if (payload.descrptionBonusLumina != null) {
+            picto.descrptionBonusLumina = payload.descrptionBonusLumina;
         }
 
-        PictoDetails details = new PictoDetails();
-        details.idPicto = payload.idPicto;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.region = payload.region;
-        details.descrptionBonusLumina = payload.descrptionBonusLumina;
-        details.unlockDescription = payload.unlockDescription;
-        details.picto = picto;
+        if (payload.region != null || payload.unlockDescription != null) {
+            if (picto.details == null) {
+                picto.details = new java.util.ArrayList<>();
+            }
 
-        picto.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+            PictoDetails details = new PictoDetails();
+            details.idPicto = payload.idPicto;
+            details.lang = payload.lang;
+            details.region = payload.region;
+            details.unlockDescription = payload.unlockDescription;
+            details.picto = picto;
+
+            picto.details.add(details);
+            if (!isNew) {
+                repository.getEntityManager().persist(details);
+            }
         }
 
         repository.getEntityManager().flush();
@@ -100,32 +107,39 @@ public class AdminPictoResource {
             entity.luminaCost = payload.luminaCost;
         }
 
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        PictoDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElseGet(() -> {
-                    PictoDetails d = new PictoDetails();
-                    d.idPicto = id;
-                    d.lang = payload.lang;
-                    d.picto = entity;
-                    entity.details.add(d);
-                    return d;
-                });
-
         if (payload.name != null) {
-            details.name = payload.name;
-        }
-        if (payload.region != null) {
-            details.region = payload.region;
+            entity.name = payload.name;
         }
         if (payload.descrptionBonusLumina != null) {
-            details.descrptionBonusLumina = payload.descrptionBonusLumina;
+            entity.descrptionBonusLumina = payload.descrptionBonusLumina;
         }
-        if (payload.unlockDescription != null) {
-            details.unlockDescription = payload.unlockDescription;
+        if (payload.region != null || payload.unlockDescription != null) {
+            if (payload.lang == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("lang is required when updating details")
+                        .build();
+            }
+            if (entity.details == null) {
+                entity.details = new java.util.ArrayList<>();
+            }
+            PictoDetails details = entity.details.stream()
+                    .filter(d -> d.lang.equals(payload.lang))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        PictoDetails d = new PictoDetails();
+                        d.idPicto = id;
+                        d.lang = payload.lang;
+                        d.picto = entity;
+                        entity.details.add(d);
+                        return d;
+                    });
+
+            if (payload.region != null) {
+                details.region = payload.region;
+            }
+            if (payload.unlockDescription != null) {
+                details.unlockDescription = payload.unlockDescription;
+            }
         }
 
         repository.getEntityManager().flush();

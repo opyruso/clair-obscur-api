@@ -22,23 +22,11 @@ public class WeaponDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
-
     @Column(name = "region")
     public String region;
 
     @Column(name = "unlock_description")
     public String unlockDescription;
-
-    @Column(name = "weapon_effect_1")
-    public String weaponEffect1;
-
-    @Column(name = "weapon_effect_2")
-    public String weaponEffect2;
-
-    @Column(name = "weapon_effect_3")
-    public String weaponEffect3;
 
     @ManyToOne
     @JoinColumns({

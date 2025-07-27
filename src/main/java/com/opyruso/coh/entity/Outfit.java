@@ -16,6 +16,9 @@ public class Outfit extends PanacheEntityBase {
     @JoinColumn(name = "id_character")
     public Character character;
 
+    @Column(name = "name")
+    public String name;
+
     @OneToMany(mappedBy = "outfit", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     public List<OutfitDetails> details;

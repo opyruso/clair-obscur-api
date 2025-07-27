@@ -63,40 +63,26 @@ public class PublicDataResource {
             CharacterWithDetails dto = new CharacterWithDetails();
             dto.idCharacter = c.idCharacter;
             dto.lang = lang;
-            dto.name = d != null ? d.name : "";
+            dto.name = c.name != null ? c.name : "";
             dto.story = d != null ? d.story : "";
             return dto;
         }).toList();
 
-        java.util.Map<String, DamageTypeDetails> damageTypeDetails = DamageTypeDetails
-                .find("lang", lang)
-                .list()
-                .stream()
-                .map(e -> (DamageTypeDetails) e)
-                .collect(java.util.stream.Collectors.toMap(d -> d.idDamageType, d -> d));
         java.util.List<DamageType> damageTypeEntities = DamageType.listAll();
         data.damageTypes = damageTypeEntities.stream().map(dt -> {
-            DamageTypeDetails dd = (DamageTypeDetails) damageTypeDetails.get(dt.idDamageType);
             DamageTypeWithDetails dto = new DamageTypeWithDetails();
             dto.idDamageType = dt.idDamageType;
             dto.lang = lang;
-            dto.name = dd != null ? dd.name : "";
+            dto.name = dt.name != null ? dt.name : "";
             return dto;
         }).toList();
 
-        java.util.Map<String, DamageBuffTypeDetails> damageBuffTypeDetails = DamageBuffTypeDetails
-                .find("lang", lang)
-                .list()
-                .stream()
-                .map(e -> (DamageBuffTypeDetails) e)
-                .collect(java.util.stream.Collectors.toMap(d -> d.idDamageBuffType, d -> d));
         java.util.List<DamageBuffType> damageBuffTypeEntities = DamageBuffType.listAll();
         data.damageBuffTypes = damageBuffTypeEntities.stream().map(db -> {
-            DamageBuffTypeDetails dd = (DamageBuffTypeDetails) damageBuffTypeDetails.get(db.idDamageBuffType);
             DamageBuffTypeWithDetails dto = new DamageBuffTypeWithDetails();
             dto.idDamageBuffType = db.idDamageBuffType;
             dto.lang = lang;
-            dto.name = dd != null ? dd.name : "";
+            dto.name = db.name != null ? db.name : "";
             return dto;
         }).toList();
 
@@ -118,15 +104,13 @@ public class PublicDataResource {
             dto.bonusHealth = p.bonusHealth;
             dto.luminaCost = p.luminaCost;
             dto.lang = lang;
+            dto.name = p.name != null ? p.name : "";
+            dto.descrptionBonusLumina = p.descrptionBonusLumina != null ? p.descrptionBonusLumina : "";
             if (pd != null) {
-                dto.name = pd.name;
                 dto.region = pd.region;
-                dto.descrptionBonusLumina = pd.descrptionBonusLumina;
                 dto.unlockDescription = pd.unlockDescription;
             } else {
-                dto.name = "";
                 dto.region = "";
-                dto.descrptionBonusLumina = "";
                 dto.unlockDescription = "";
             }
             return dto;
@@ -148,20 +132,16 @@ public class PublicDataResource {
             dto.damageBuffType1 = w.damageBuffType1 != null ? w.damageBuffType1.idDamageBuffType : null;
             dto.damageBuffType2 = w.damageBuffType2 != null ? w.damageBuffType2.idDamageBuffType : null;
             dto.lang = lang;
+            dto.name = w.name != null ? w.name : "";
+            dto.weaponEffect1 = w.weaponEffect1 != null ? w.weaponEffect1 : "";
+            dto.weaponEffect2 = w.weaponEffect2 != null ? w.weaponEffect2 : "";
+            dto.weaponEffect3 = w.weaponEffect3 != null ? w.weaponEffect3 : "";
             if (wd != null) {
-                dto.name = wd.name;
                 dto.region = wd.region;
                 dto.unlockDescription = wd.unlockDescription;
-                dto.weaponEffect1 = wd.weaponEffect1;
-                dto.weaponEffect2 = wd.weaponEffect2;
-                dto.weaponEffect3 = wd.weaponEffect3;
             } else {
-                dto.name = "";
                 dto.region = "";
                 dto.unlockDescription = "";
-                dto.weaponEffect1 = "";
-                dto.weaponEffect2 = "";
-                dto.weaponEffect3 = "";
             }
             return dto;
         }).toList();
@@ -179,7 +159,7 @@ public class PublicDataResource {
             dto.idOutfit = o.idOutfit;
             dto.character = o.character != null ? o.character.idCharacter : null;
             dto.lang = lang;
-            dto.name = od != null ? od.name : "";
+            dto.name = o.name != null ? o.name : "";
             dto.description = od != null ? od.description : "";
             return dto;
         }).toList();
@@ -204,35 +184,25 @@ public class PublicDataResource {
             dto.gridPositionX = c.gridPositionX;
             dto.gridPositionY = c.gridPositionY;
             dto.lang = lang;
+            dto.name = c.name != null ? c.name : "";
+            dto.effectPrimary = c.effectPrimary != null ? c.effectPrimary : "";
+            dto.effectSecondary = c.effectSecondary != null ? c.effectSecondary : "";
             if (cd != null) {
-                dto.name = cd.name;
-                dto.effectPrimary = cd.effectPrimary;
-                dto.effectSecondary = cd.effectSecondary;
                 dto.bonusDescription = cd.bonusDescription;
                 dto.additionnalDescription = cd.additionnalDescription;
             } else {
-                dto.name = "";
-                dto.effectPrimary = "";
-                dto.effectSecondary = "";
                 dto.bonusDescription = "";
                 dto.additionnalDescription = "";
             }
             return dto;
         }).toList();
 
-        java.util.Map<String, CapacityTypeDetails> capacityTypeDetails = CapacityTypeDetails
-                .find("lang", lang)
-                .list()
-                .stream()
-                .map(e -> (CapacityTypeDetails) e)
-                .collect(java.util.stream.Collectors.toMap(d -> d.idCapacityType, d -> d));
         java.util.List<CapacityType> capacityTypeEntities = CapacityType.listAll();
         data.capacityTypes = capacityTypeEntities.stream().map(ct -> {
-            CapacityTypeDetails ctd = (CapacityTypeDetails) capacityTypeDetails.get(ct.idCapacityType);
             CapacityTypeWithDetails dto = new CapacityTypeWithDetails();
             dto.idCapacityType = ct.idCapacityType;
             dto.lang = lang;
-            dto.name = ctd != null ? ctd.name : "";
+            dto.name = ct.name != null ? ct.name : "";
             return dto;
         }).toList();
 

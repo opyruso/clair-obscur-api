@@ -39,6 +39,15 @@ public class Capacity extends PanacheEntityBase {
     @Column(name = "grid_position_y")
     public Integer gridPositionY;
 
+    @Column(name = "name")
+    public String name;
+
+    @Column(name = "effect_primary")
+    public String effectPrimary;
+
+    @Column(name = "effect_secondary")
+    public String effectSecondary;
+
     @OneToMany(mappedBy = "capacity", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     public List<CapacityDetails> details;

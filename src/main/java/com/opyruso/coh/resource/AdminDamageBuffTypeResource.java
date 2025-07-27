@@ -32,19 +32,8 @@ public class AdminDamageBuffTypeResource {
             isNew = true;
         }
 
-        if (damageBuffType.details == null) {
-            damageBuffType.details = new java.util.ArrayList<>();
-        }
-
-        DamageBuffTypeDetails details = new DamageBuffTypeDetails();
-        details.idDamageBuffType = payload.idDamageBuffType;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.damageBuffType = damageBuffType;
-
-        damageBuffType.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+        if (payload.name != null) {
+            damageBuffType.name = payload.name;
         }
 
         repository.getEntityManager().flush();
@@ -60,23 +49,8 @@ public class AdminDamageBuffTypeResource {
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        DamageBuffTypeDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElseGet(() -> {
-                    DamageBuffTypeDetails d = new DamageBuffTypeDetails();
-                    d.idDamageBuffType = id;
-                    d.lang = payload.lang;
-                    d.damageBuffType = entity;
-                    entity.details.add(d);
-                    return d;
-                });
-
         if (payload.name != null) {
-            details.name = payload.name;
+            entity.name = payload.name;
         }
 
         repository.getEntityManager().flush();

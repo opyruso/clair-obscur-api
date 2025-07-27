@@ -18,8 +18,6 @@ public class CapacityTypeDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
 
     @ManyToOne
     @JoinColumn(name = "id_capacity_type", insertable = false, updatable = false)

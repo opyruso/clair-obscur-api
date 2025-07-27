@@ -18,9 +18,6 @@ public class OutfitDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
-
     @Column(name = "description")
     public String description;
 

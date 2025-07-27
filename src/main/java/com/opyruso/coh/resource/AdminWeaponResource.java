@@ -63,25 +63,36 @@ public class AdminWeaponResource {
         weapon.damageBuffType1 = damageBuffType1;
         weapon.damageBuffType2 = damageBuffType2;
 
-        if (weapon.details == null) {
-            weapon.details = new java.util.ArrayList<>();
+        if (payload.name != null) {
+            weapon.name = payload.name;
+        }
+        if (payload.weaponEffect1 != null) {
+            weapon.weaponEffect1 = payload.weaponEffect1;
+        }
+        if (payload.weaponEffect2 != null) {
+            weapon.weaponEffect2 = payload.weaponEffect2;
+        }
+        if (payload.weaponEffect3 != null) {
+            weapon.weaponEffect3 = payload.weaponEffect3;
         }
 
-        WeaponDetails details = new WeaponDetails();
-        details.idWeapon = payload.idWeapon;
-        details.idCharacter = character.idCharacter;
-        details.lang = payload.lang;
-        details.name = payload.name;
-        details.region = payload.region;
-        details.unlockDescription = payload.unlockDescription;
-        details.weaponEffect1 = payload.weaponEffect1;
-        details.weaponEffect2 = payload.weaponEffect2;
-        details.weaponEffect3 = payload.weaponEffect3;
-        details.weapon = weapon;
+        if (payload.region != null || payload.unlockDescription != null) {
+            if (weapon.details == null) {
+                weapon.details = new java.util.ArrayList<>();
+            }
 
-        weapon.details.add(details);
-        if (!isNew) {
-            repository.getEntityManager().persist(details);
+            WeaponDetails details = new WeaponDetails();
+            details.idWeapon = payload.idWeapon;
+            details.idCharacter = character.idCharacter;
+            details.lang = payload.lang;
+            details.region = payload.region;
+            details.unlockDescription = payload.unlockDescription;
+            details.weapon = weapon;
+
+            weapon.details.add(details);
+            if (!isNew) {
+                repository.getEntityManager().persist(details);
+            }
         }
 
         repository.getEntityManager().flush();
@@ -128,41 +139,49 @@ public class AdminWeaponResource {
             entity.damageBuffType2 = damageBuffType2;
         }
 
-        if (entity.details == null) {
-            entity.details = new java.util.ArrayList<>();
-        }
-        WeaponDetails details = entity.details.stream()
-                .filter(d -> d.lang.equals(payload.lang))
-                .findFirst()
-                .orElseGet(() -> {
-                    WeaponDetails d = new WeaponDetails();
-                    d.idWeapon = id;
-                    d.idCharacter = finalCharacter.idCharacter;
-                    d.lang = payload.lang;
-                    d.weapon = entity;
-                    entity.details.add(d);
-                    return d;
-                });
-
-        details.idCharacter = finalCharacter.idCharacter;
-
         if (payload.name != null) {
-            details.name = payload.name;
-        }
-        if (payload.region != null) {
-            details.region = payload.region;
-        }
-        if (payload.unlockDescription != null) {
-            details.unlockDescription = payload.unlockDescription;
+            entity.name = payload.name;
         }
         if (payload.weaponEffect1 != null) {
-            details.weaponEffect1 = payload.weaponEffect1;
+            entity.weaponEffect1 = payload.weaponEffect1;
         }
         if (payload.weaponEffect2 != null) {
-            details.weaponEffect2 = payload.weaponEffect2;
+            entity.weaponEffect2 = payload.weaponEffect2;
         }
         if (payload.weaponEffect3 != null) {
-            details.weaponEffect3 = payload.weaponEffect3;
+            entity.weaponEffect3 = payload.weaponEffect3;
+        }
+
+        if (payload.region != null || payload.unlockDescription != null) {
+            if (payload.lang == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("lang is required when updating details")
+                        .build();
+            }
+            if (entity.details == null) {
+                entity.details = new java.util.ArrayList<>();
+            }
+            WeaponDetails details = entity.details.stream()
+                    .filter(d -> d.lang.equals(payload.lang))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        WeaponDetails d = new WeaponDetails();
+                        d.idWeapon = id;
+                        d.idCharacter = finalCharacter.idCharacter;
+                        d.lang = payload.lang;
+                        d.weapon = entity;
+                        entity.details.add(d);
+                        return d;
+                    });
+
+            details.idCharacter = finalCharacter.idCharacter;
+
+            if (payload.region != null) {
+                details.region = payload.region;
+            }
+            if (payload.unlockDescription != null) {
+                details.unlockDescription = payload.unlockDescription;
+            }
         }
 
         repository.getEntityManager().flush();

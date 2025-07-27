@@ -12,6 +12,9 @@ public class Character extends PanacheEntityBase {
     @Column(name = "id_character")
     public String idCharacter;
 
+    @Column(name = "name")
+    public String name;
+
     @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     public List<CharacterDetails> details;

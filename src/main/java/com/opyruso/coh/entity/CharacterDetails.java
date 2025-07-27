@@ -18,9 +18,6 @@ public class CharacterDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "name")
-    public String name;
-
     @Column(name = "story")
     public String story;
 

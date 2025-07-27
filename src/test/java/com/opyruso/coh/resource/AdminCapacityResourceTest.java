@@ -52,11 +52,11 @@ public class AdminCapacityResourceTest {
         capacity.character = c;
         capacity.damageType = dt;
         capacity.type = ct;
+        capacity.name = "name";
 
         CapacityDetails cd = new CapacityDetails();
         cd.idCapacity = "cap1";
         cd.lang = "en";
-        cd.name = "name";
         cd.capacity = capacity;
 
         capacity.details = new java.util.ArrayList<>(java.util.List.of(cd));

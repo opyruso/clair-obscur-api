@@ -30,8 +30,7 @@ public class BuildResource {
     SecurityIdentity identity;
 
     private String getUserId() {
-        Object sub = identity.getAttribute("sub");
-        return sub != null ? sub.toString() : identity.getPrincipal().getName();
+        return identity.getPrincipal().getName();
     }
 
     private String generateKey() {

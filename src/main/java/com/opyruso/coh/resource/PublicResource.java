@@ -18,8 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
-import io.quarkus.hibernate.orm.panache.Sort;
 import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
 
 @Path("/public/builds")
 @Consumes(MediaType.APPLICATION_JSON)

@@ -1,12 +1,11 @@
 package com.opyruso.coh.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "damage_type")
-public class DamageType extends PanacheEntityBase {
+public class DamageType extends AuditableEntity {
 
     @Id
     @Column(name = "id_damage_type")

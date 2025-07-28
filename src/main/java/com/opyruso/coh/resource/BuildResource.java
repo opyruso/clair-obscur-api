@@ -73,6 +73,24 @@ public class BuildResource {
         return Response.ok().build();
     }
 
+    @GET
+    @Path("{id}")
+    public Response get(@PathParam("id") String id) {
+        CohBuild build = repository.findById(id);
+        if (build == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (!getUserId().equals(build.author)) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        BuildPayload dto = new BuildPayload();
+        dto.title = build.title;
+        dto.description = build.description;
+        dto.recommendedLevel = build.recommendedLevel;
+        dto.content = new String(Base64.getDecoder().decode(build.content), StandardCharsets.UTF_8);
+        return Response.ok(dto).build();
+    }
+
     @DELETE
     @Path("{id}")
     @Transactional

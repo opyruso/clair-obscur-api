@@ -18,8 +18,11 @@ public class OutfitDetails extends PanacheEntityBase {
     @Column(name = "lang")
     public String lang;
 
-    @Column(name = "description")
-    public String description;
+    @Column(name = "region")
+    public String region;
+
+    @Column(name = "unlock_description")
+    public String unlockDescription;
 
     @ManyToOne
     @JoinColumn(name = "id_outfit", insertable = false, updatable = false)

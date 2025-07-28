@@ -37,14 +37,15 @@ public class AdminOutfitResource {
             outfit.name = payload.name;
         }
 
-        if (payload.description != null) {
+        if (payload.region != null || payload.unlockDescription != null) {
             if (outfit.details == null) {
                 outfit.details = new java.util.ArrayList<>();
             }
             OutfitDetails details = new OutfitDetails();
             details.idOutfit = payload.idOutfit;
             details.lang = payload.lang;
-            details.description = payload.description;
+            details.region = payload.region;
+            details.unlockDescription = payload.unlockDescription;
             details.outfit = outfit;
             outfit.details.add(details);
             if (!isNew) {
@@ -72,10 +73,10 @@ public class AdminOutfitResource {
         if (payload.name != null) {
             entity.name = payload.name;
         }
-        if (payload.description != null) {
+        if (payload.region != null || payload.unlockDescription != null) {
             if (payload.lang == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("lang is required when updating description")
+                        .entity("lang is required when updating details")
                         .build();
             }
             if (entity.details == null) {
@@ -92,7 +93,12 @@ public class AdminOutfitResource {
                         entity.details.add(d);
                         return d;
                     });
-            details.description = payload.description;
+            if (payload.region != null) {
+                details.region = payload.region;
+            }
+            if (payload.unlockDescription != null) {
+                details.unlockDescription = payload.unlockDescription;
+            }
         }
 
         repository.getEntityManager().flush();

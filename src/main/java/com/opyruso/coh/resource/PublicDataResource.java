@@ -160,7 +160,13 @@ public class PublicDataResource {
             dto.character = o.character != null ? o.character.idCharacter : null;
             dto.lang = lang;
             dto.name = o.name != null ? o.name : "";
-            dto.description = od != null ? od.description : "";
+            if (od != null) {
+                dto.region = od.region;
+                dto.unlockDescription = od.unlockDescription;
+            } else {
+                dto.region = "";
+                dto.unlockDescription = "";
+            }
             return dto;
         }).toList();
 

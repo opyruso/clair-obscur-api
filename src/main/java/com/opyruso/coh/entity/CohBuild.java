@@ -18,4 +18,19 @@ public class CohBuild extends PanacheEntityBase {
     @Lob
     @Column(name = "content")
     public String content;
+
+    @Column(name = "author")
+    public String author;
+
+    @Column(name = "firstname")
+    public String firstname;
+
+    @Column(name = "title")
+    public String title;
+
+    @Column(name = "recommended_level")
+    public Integer recommendedLevel;
+
+    @Column(name = "description")
+    public String description;
 }

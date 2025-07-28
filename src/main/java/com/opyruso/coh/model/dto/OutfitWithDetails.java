@@ -5,5 +5,6 @@ public class OutfitWithDetails {
     public String character;
     public String lang;
     public String name;
-    public String description;
+    public String region;
+    public String unlockDescription;
 }

@@ -29,6 +29,11 @@ public class BuildResource {
     @Inject
     SecurityIdentity identity;
 
+    private String getUserId() {
+        Object sub = identity.getAttribute("sub");
+        return sub != null ? sub.toString() : identity.getPrincipal().getName();
+    }
+
     private String generateKey() {
         return UUID.randomUUID().toString();
     }
@@ -39,7 +44,7 @@ public class BuildResource {
         String id = generateKey();
         CohBuild build = new CohBuild();
         build.idBuild = id;
-        build.author = identity.getPrincipal().getName();
+        build.author = getUserId();
         Object fn = identity.getAttribute("given_name");
         build.firstname = fn != null ? fn.toString() : null;
         build.title = payload.title;
@@ -58,7 +63,7 @@ public class BuildResource {
         if (build == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (!identity.getPrincipal().getName().equals(build.author)) {
+        if (!getUserId().equals(build.author)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         if (payload.title != null) build.title = payload.title;
@@ -77,7 +82,7 @@ public class BuildResource {
         if (build == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (!identity.getPrincipal().getName().equals(build.author)) {
+        if (!getUserId().equals(build.author)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         repository.delete(build);
@@ -86,7 +91,7 @@ public class BuildResource {
 
     @GET
     public Response listIds() {
-        List<String> ids = repository.find("author", identity.getPrincipal().getName())
+        List<String> ids = repository.find("author", getUserId())
                 .list()
                 .stream()
                 .map(b -> b.idBuild)

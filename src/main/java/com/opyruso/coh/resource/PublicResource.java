@@ -1,6 +1,7 @@
 package com.opyruso.coh.resource;
 
 import com.opyruso.coh.entity.CohBuild;
+import com.opyruso.coh.model.dto.BuildPayload;
 import com.opyruso.coh.repository.CohBuildRepository;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
 
 @Path("/public/builds")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -44,8 +47,29 @@ public class PublicResource {
         if (build == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        String json = new String(Base64.getDecoder().decode(build.content), StandardCharsets.UTF_8);
-        return Response.ok(json, MediaType.APPLICATION_JSON).build();
+        BuildPayload dto = new BuildPayload();
+        dto.title = build.title;
+        dto.description = build.description;
+        dto.recommendedLevel = build.recommendedLevel;
+        dto.content = new String(Base64.getDecoder().decode(build.content), StandardCharsets.UTF_8);
+        return Response.ok(dto).build();
+    }
+
+    @GET
+    @Path("latest")
+    public Response latest() {
+        var list = repository.findAll(Sort.descending("creationDate")).page(Page.ofSize(10)).list()
+                .stream()
+                .map(b -> Map.of(
+                        "id", b.idBuild,
+                        "title", b.title,
+                        "description", b.description,
+                        "recommendedLevel", b.recommendedLevel,
+                        "author", b.author,
+                        "firstname", b.firstname,
+                        "creationDate", b.creationDate))
+                .toList();
+        return Response.ok(list).build();
     }
 
     private String generateKey() {

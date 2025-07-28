@@ -1,12 +1,11 @@
 package com.opyruso.coh.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "outfit")
-public class Outfit extends PanacheEntityBase {
+public class Outfit extends AuditableEntity {
 
     @Id
     @Column(name = "id_outfit")

@@ -1,6 +1,5 @@
 package com.opyruso.coh.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,7 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "coh_builds")
-public class CohBuild extends PanacheEntityBase {
+public class CohBuild extends AuditableEntity {
 
     @Id
     @Column(name = "id_build")

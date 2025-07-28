@@ -1,6 +1,5 @@
 package com.opyruso.coh.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
@@ -8,7 +7,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "damage_buff_type_details")
 @IdClass(DamageBuffTypeDetails.PK.class)
-public class DamageBuffTypeDetails extends PanacheEntityBase {
+public class DamageBuffTypeDetails extends AuditableEntity {
 
     @Id
     @Column(name = "id_damage_buff_type")

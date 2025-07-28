@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -81,5 +82,15 @@ public class BuildResource {
         }
         repository.delete(build);
         return Response.noContent().build();
+    }
+
+    @GET
+    public Response listIds() {
+        List<String> ids = repository.find("author", identity.getPrincipal().getName())
+                .list()
+                .stream()
+                .map(b -> b.idBuild)
+                .toList();
+        return Response.ok(ids).build();
     }
 }

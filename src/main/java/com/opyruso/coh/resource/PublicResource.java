@@ -11,6 +11,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -57,8 +58,12 @@ public class PublicResource {
 
     @GET
     @Path("latest")
-    public Response latest() {
-        var list = repository.findAll(Sort.descending("creationDate")).page(Page.ofSize(10)).list()
+    public Response latest(@QueryParam("q") String query) {
+        var stream = (query == null || query.isBlank())
+                ? repository.findAll(Sort.descending("creationDate"))
+                : repository.find("(lower(description) like ?1 or lower(firstname) like ?1)",
+                        Sort.descending("creationDate"), "%" + query.toLowerCase() + "%");
+        var list = stream.page(Page.ofSize(10)).list()
                 .stream()
                 .map(b -> Map.of(
                         "id", b.idBuild,

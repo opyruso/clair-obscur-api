@@ -66,15 +66,19 @@ public class PublicResource {
         var list = stream.page(Page.ofSize(10)).list()
                 .stream()
                 .map(b -> Map.of(
-                        "id", b.idBuild,
-                        "title", b.title,
-                        "description", b.description,
-                        "recommendedLevel", b.recommendedLevel,
-                        "author", b.author,
-                        "firstname", b.firstname,
-                        "creationDate", b.creationDate))
+                        "id", orBlank(b.idBuild),
+                        "title", orBlank(b.title),
+                        "description", orBlank(b.description),
+                        "recommendedLevel", orBlank(b.recommendedLevel),
+                        "author", orBlank(b.author),
+                        "firstname", orBlank(b.firstname),
+                        "creationDate", orBlank(b.creationDate)))
                 .toList();
         return Response.ok(list).build();
+    }
+
+    private static Object orBlank(Object value) {
+        return value != null ? value : "";
     }
 
     private String generateKey() {

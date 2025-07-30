@@ -60,8 +60,8 @@ public class PublicResource {
     @Path("latest")
     public Response latest(@QueryParam("q") String query) {
         var stream = (query == null || query.isBlank())
-                ? repository.findAll(Sort.descending("creationDate"))
-                : repository.find("(lower(description) like ?1 or lower(firstname) like ?1)",
+                ? repository.find("author is not null", Sort.descending("creationDate"))
+                : repository.find("author is not null and (lower(description) like ?1 or lower(firstname) like ?1)",
                         Sort.descending("creationDate"), "%" + query.toLowerCase() + "%");
         var list = stream.page(Page.ofSize(10)).list()
                 .stream()

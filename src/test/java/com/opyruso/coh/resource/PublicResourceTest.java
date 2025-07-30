@@ -27,15 +27,11 @@ public class PublicResourceTest {
     }
 
     @Test
-    public void latestReplacesNullWithBlank() {
+    public void latestIgnoresAnonymousBuilds() {
         given()
                 .get("/public/builds/latest")
                 .then()
                 .statusCode(200)
-                .body("[0].title", is(""))
-                .body("[0].description", is(""))
-                .body("[0].recommendedLevel", is(""))
-                .body("[0].author", is(""))
-                .body("[0].firstname", is(""));
+                .body("size()", is(0));
     }
 }

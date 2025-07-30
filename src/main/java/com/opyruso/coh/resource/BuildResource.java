@@ -107,12 +107,24 @@ public class BuildResource {
     }
 
     @GET
-    public Response listIds() {
-        List<String> ids = repository.find("author", getUserId())
+    public Response list() {
+        List<Map<String, Object>> builds = repository.find("author", getUserId())
                 .list()
                 .stream()
-                .map(b -> b.idBuild)
+                .map(b -> Map.of(
+                        "id", orBlank(b.idBuild),
+                        "title", orBlank(b.title),
+                        "description", orBlank(b.description),
+                        "recommendedLevel", orBlank(b.recommendedLevel),
+                        "author", orBlank(b.author),
+                        "firstname", orBlank(b.firstname),
+                        "creationDate", orBlank(b.creationDate)
+                ))
                 .toList();
-        return Response.ok(ids).build();
+        return Response.ok(builds).build();
+    }
+
+    private static Object orBlank(Object value) {
+        return value != null ? value : "";
     }
 }

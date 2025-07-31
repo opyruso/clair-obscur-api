@@ -1,7 +1,6 @@
 package com.opyruso.coh.resource;
 
 import com.opyruso.coh.entity.CohBuild;
-import com.opyruso.coh.model.dto.BuildPayload;
 import com.opyruso.coh.repository.CohBuildRepository;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -48,11 +47,12 @@ public class PublicResource {
         if (build == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        BuildPayload dto = new BuildPayload();
-        dto.title = build.title;
-        dto.description = build.description;
-        dto.recommendedLevel = build.recommendedLevel;
-        dto.content = new String(Base64.getDecoder().decode(build.content), StandardCharsets.UTF_8);
+        Map<String, Object> dto = Map.of(
+                "title", orBlank(build.title),
+                "description", orBlank(build.description),
+                "recommendedLevel", orBlank(build.recommendedLevel),
+                "content", new String(Base64.getDecoder().decode(build.content), StandardCharsets.UTF_8)
+        );
         return Response.ok(dto).build();
     }
 

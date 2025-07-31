@@ -34,4 +34,16 @@ public class PublicResourceTest {
                 .statusCode(200)
                 .body("size()", is(0));
     }
+
+    @Test
+    public void getReturnsBlankFieldsWhenMissing() {
+        given()
+                .get("/public/builds/b1")
+                .then()
+                .statusCode(200)
+                .body("title", is(""))
+                .body("description", is(""))
+                .body("recommendedLevel", is(""))
+                .body("content", is(""));
+    }
 }

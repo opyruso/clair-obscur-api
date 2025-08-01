@@ -40,6 +40,24 @@ public class BuildResource {
     @POST
     @Transactional
     public Response create(BuildPayload payload) {
+        if (payload.id != null) {
+            CohBuild existing = repository.findById(payload.id);
+            if (existing != null && getUserId().equals(existing.author)) {
+                if (payload.title != null) existing.title = payload.title;
+                if (payload.description != null) existing.description = payload.description;
+                if (payload.recommendedLevel != null) existing.recommendedLevel = payload.recommendedLevel;
+                if (payload.content != null) {
+                    existing.content = Base64.getEncoder().encodeToString(payload.content.getBytes(StandardCharsets.UTF_8));
+                }
+                repository.getEntityManager().flush();
+                return Response.ok(Map.of("id", existing.idBuild)).build();
+            }
+            return createNew(payload, payload.id);
+        }
+        return createNew(payload, null);
+    }
+
+    private Response createNew(BuildPayload payload, String originId) {
         String id = generateKey();
         CohBuild build = new CohBuild();
         build.idBuild = id;
@@ -50,6 +68,7 @@ public class BuildResource {
         build.description = payload.description;
         build.recommendedLevel = payload.recommendedLevel;
         build.content = Base64.getEncoder().encodeToString(payload.content.getBytes(StandardCharsets.UTF_8));
+        build.buildOrigin = originId;
         repository.persist(build);
         return Response.status(Response.Status.CREATED).entity(Map.of("id", id)).build();
     }

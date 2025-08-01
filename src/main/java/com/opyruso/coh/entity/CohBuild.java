@@ -32,4 +32,7 @@ public class CohBuild extends AuditableEntity {
 
     @Column(name = "description")
     public String description;
+
+    @Column(name = "build_origin")
+    public String buildOrigin;
 }
